@@ -1,0 +1,1208 @@
+# #-#-#-#-#  hostinger-easy-onboarding.po (Hostinger Easy Onboarding 1.0.0)  #-#-#-#-#
+# Copyright (C) 2024 Hostinger
+# This file is distributed under the GPL v3.
+# #-#-#-#-#  hostinger-id_ID.po (Plugins - Hostinger - Stable (latest release))  #-#-#-#-#
+# Translation of Plugins - Hostinger - Stable (latest release) in Indonesian
+# This file is distributed under the same license as the Plugins - Hostinger - Stable (latest release) package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Hostinger Easy Onboarding 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/hostinger-easy-"
+"onboarding\n"
+"Last-Translator: \n"
+"Language-Team: Indonesian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2024-05-06T11:48:04+00:00\n"
+"PO-Revision-Date: 2024-08-27 06:14+0000\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Domain: hostinger-easy-onboarding\n"
+"X-Loco-Version: 2.6.10; wp-6.4.5\n"
+"Language: id_ID\n"
+"Plural-Forms: nplurals=1; plural=0;"
+
+#: includes/Admin/Assets.php:123
+msgid ""
+" Learn how to connect your domain to Hostinger by watching this tutorial on "
+"YouTube for a step-by-step guide:"
+msgstr ""
+"Cek panduan lengkap cara menghubungkan domain ke Hostinger di video tutorial "
+"Youtube kami:"
+
+#. translators: %s plugin slug
+#: includes/Rest/WooRoutes.php:98
+msgid "%s is already active"
+msgstr "%s sudah aktif"
+
+#. translators: %s field name that is missing
+#: includes/Rest/StepRoutes.php:59 includes/Rest/StepRoutes.php:63
+#: includes/Rest/WooRoutes.php:41 includes/Rest/WooRoutes.php:90
+#: includes/Rest/WooRoutes.php:169
+msgid "%s missing or empty"
+msgstr "%s hilang atau kosong"
+
+#: includes/Admin/Onboarding/PluginManager.php:28
+msgid "Accept credit card payments in your store with Stripe for WooCommerce."
+msgstr ""
+"Terima pembayaran kartu kredit di toko Anda dengan Stripe untuk WooCommerce."
+
+#: includes/Admin/Onboarding/PluginManager.php:40
+msgid "Accept payments via credit card. Manage transactions within WordPress."
+msgstr ""
+"Menerima pembayaran melalui kartu kredit. Mengelola transaksi di WordPress."
+
+#: includes/Admin/Assets.php:175
+msgid "Access site identity and edit title"
+msgstr "Buka site identity dan edit judul"
+
+#: includes/Admin/Onboarding/Onboarding.php:339
+msgid "Access the Site identity and edit title"
+msgstr "Buka Site identity dan edit judul"
+
+#: includes/Errors.php:14
+msgid "Action Failed. Try again or contact support. Apologies."
+msgstr "Maaf, terjadi kesalahan. Silakan coba lagi atau hubungi tim support."
+
+#: includes/Admin/Assets.php:189
+msgid "Activate"
+msgstr "Aktifkan"
+
+#: includes/Admin/Onboarding/Onboarding.php:397
+msgid "Add a gallery block"
+msgstr "Tambahkan blok galeri"
+
+#: includes/Admin/Assets.php:139 includes/Admin/Assets.php:177
+#: includes/Admin/Onboarding/Onboarding.php:368
+#: includes/Admin/Onboarding/Onboarding.php:409
+msgid "Add a new page"
+msgstr "Tambahkan halaman baru"
+
+#: includes/Admin/Assets.php:191 includes/Admin/Onboarding/Onboarding.php:413
+msgid "Add a title"
+msgstr "Tambahkan judul"
+
+#: includes/Admin/Assets.php:202 includes/Admin/Onboarding/Onboarding.php:417
+msgid "Add content"
+msgstr "Tambahkan konten"
+
+#: includes/Admin/Assets.php:178
+msgid "Add plugin"
+msgstr "Tambahkan plugin"
+
+#: includes/Admin/Onboarding/Onboarding.php:495
+#| msgid "Add products"
+msgid "Add product"
+msgstr "Tambahkan produk"
+
+#: includes/Admin/Assets.php:198
+msgid "Add shipping method"
+msgstr "Tambahkan metode pengiriman"
+
+#: includes/Admin/Onboarding/Onboarding.php:381
+msgid "Add the content and images that represent your services"
+msgstr "Tambahkan konten dan gambar layanan Anda"
+
+#: includes/Admin/Assets.php:201 includes/Admin/Onboarding/Onboarding.php:414
+msgid ""
+"Add the title of the page, for example, About. Click the Add Title text to "
+"open the text box where you will add your title. The title of your page "
+"should be descriptive of the information the page will have."
+msgstr ""
+"Tambahkan judul halaman, misalnya halaman Tentang Kami. Klik Add Title untuk "
+"menambahkan judul pada teks. Judul halaman harus menggambarkan isi konten "
+"yang akan ditulis."
+
+#: includes/Admin/Assets.php:112 includes/Admin/Onboarding/Onboarding.php:489
+msgid "Add your first product"
+msgstr "Tambahkan produk pertama Anda"
+
+#: includes/Admin/Assets.php:113
+msgid "Add your first product or service"
+msgstr "Tambahkan produk atau layanan pertama Anda"
+
+#: includes/Admin/Assets.php:179
+msgid "Added"
+msgstr "Ditambahkan"
+
+#: includes/Admin/Assets.php:129
+msgid ""
+"Adding a logo is a great way to personalize a website or add branding "
+"information. You can use your existing logo or create a new one using the <a "
+"href=\"https://logo.hostinger.com/?ref=wordpress-onboarding\" style=\"text-"
+"decoration:none; font-weight:bold; color:#673de6\">AI Logo Maker.</a>"
+msgstr ""
+"Tambahkan logo untuk membangun identitas website atau memberikan informasi "
+"tentang brand. Anda dapat menggunakan logo yang sudah ada atau membuat logo "
+"baru menggunakan <a href=\"https://logo.hostinger.com/?ref=wordpress-"
+"onboarding\" style=\"text-decoration:none; font-weight:bold; color:#673de6\">"
+"AI Logo Maker.</a>"
+
+#: includes/Admin/Onboarding/Onboarding.php:212
+msgid ""
+"Adding a logo is a great way to personalize a website or add branding "
+"information. You can use your existing logo or create a new one using the <a "
+"href=\"https://logo.hostinger.com/?ref=wordpress-onboarding\" "
+"target=\"_blank\">AI Logo Maker</a>."
+msgstr ""
+"Tambahkan logo untuk membangun identitas website atau memberikan informasi "
+"tentang brand. Anda dapat menggunakan logo yang sudah ada atau membuat logo "
+"baru menggunakan <a href=\"https://logo.hostinger.com/?ref=wordpress-"
+"onboarding\" target=\"_blank\">AI Logo Maker</a>."
+
+#: includes/Admin/Onboarding/PluginManager.php:68
+msgid "Adds Correios shipping methods to your WooCommerce store."
+msgstr "Menambahkan metode pengiriman Correios ke toko WooCommerce Anda."
+
+#: includes/Admin/Onboarding/PluginManager.php:58
+msgid ""
+"Adiciona PagSeguro como meio de pagamento (com desconto nas taxas oficiais)."
+msgstr ""
+"Adiciona PagSeguro como meio de pagamento (com desconto nas taxas oficiais)."
+
+#: includes/Admin/Onboarding/PluginManager.php:49
+msgid ""
+"Amazon Pay is embedded directly into your existing web site, and all the "
+"buyer interactions with Amazon Pay and Login with Amazon take place in "
+"embedded widgets so that the buyer never leaves your site. "
+msgstr ""
+"Amazon Pay secara otomatis ditambahkan ke situs web Anda. Pembayaran dengan "
+"Amazon Pay dan login ke Amzon dapat dilakukan dari widget yang tersedia "
+"sehingga pembeli tidak perlu keluar dari situs Anda."
+
+#: includes/Errors.php:17
+msgid "An unexpected error occurred. Please try again or contact support."
+msgstr "Maaf, terjadi kesalahan. Silakan coba lagi atau hubungi tim support."
+
+#. translators: %s php version
+#: hostinger-easy-onboarding.php:70
+msgid "Attention:"
+msgstr "Perhatian:"
+
+#: includes/Admin/Assets.php:192
+msgid "Back"
+msgstr "Kembali"
+
+#: includes/Admin/Assets.php:205 includes/Admin/Onboarding/Onboarding.php:422
+msgid ""
+"Before publishing, you can preview your created page by clicking on the "
+"Preview button. If you are happy with the result, click the Publish button."
+msgstr ""
+"Klik Preview untuk melihat halaman sebelum dionlinekan. Jika sudah puas, "
+"Anda bisa klik tombol Publish."
+
+#: includes/Admin/Menu.php:59
+msgid "Billings"
+msgstr "Tagihan"
+
+#: includes/Rest/WelcomeRoutes.php:65
+msgid "Choice parameter missing or empty"
+msgstr "Parameter pilihan hilang atau kosong"
+
+#: includes/Admin/Assets.php:105 includes/Admin/Onboarding/Onboarding.php:538
+msgid ""
+"Choose the ways you'd like to ship orders to customers. You can always add "
+"others later."
+msgstr ""
+"Pilih metode pengiriman pesanan ke pelanggan Anda. Anda dapat menambahkan "
+"metode pengiriman lainnya kapan saja."
+
+#: includes/Admin/Onboarding/Onboarding.php:378
+msgid ""
+"Come up with a clear and concise name for the page that accurately reflects "
+"the services you provide."
+msgstr ""
+"Berikan nama yang jelas dan ringkas untuk halaman layanan atau produk Anda."
+
+#: includes/Admin/Assets.php:151
+msgid "Complete"
+msgstr "Lengkap"
+
+#: includes/Admin/Assets.php:180 includes/Admin/Onboarding/Onboarding.php:563
+msgid "Configure"
+msgstr "Konfigurasi"
+
+#: includes/Admin/Onboarding/PluginManager.php:43
+msgid ""
+"Configure the payment options and accept payments with cards, ticket and "
+"money of Mercado Pago account."
+msgstr ""
+"Konfigurasikan opsi pembayaran dan terima pembayaran dengan kartu, tiket, "
+"dan uang dari akun Mercado Pago."
+
+#: includes/Admin/Assets.php:181
+msgid "Connect"
+msgstr "Hubungkan"
+
+#: includes/Admin/Assets.php:159
+msgid "Connect domain now"
+msgstr "Hubungkan domain sekarang"
+
+#: includes/Admin/Assets.php:188 includes/Admin/Onboarding/WelcomeCards.php:29
+msgid ""
+"Connect your <strong>Amazon Associate</strong> account to fetch API details."
+msgstr ""
+"Hubungkan akun <strong>Amazon Associate</strong> Anda untuk mendapatkan "
+"detail API."
+
+#: includes/Admin/Assets.php:140 includes/Admin/Onboarding/Onboarding.php:441
+msgid "Connect your domain"
+msgstr "Hubungkan domain"
+
+#: includes/Admin/Assets.php:118 includes/Admin/Assets.php:121
+#: includes/Admin/Assets.php:207
+msgid "Connect your domain to Hostinger"
+msgstr "Hubungkan domain Anda ke Hostinger"
+
+#: includes/Admin/Assets.php:203 includes/Admin/Onboarding/Onboarding.php:418
+msgid ""
+"Content can be anything you wish, for example, text, images, videos, tables, "
+"and lots more. Click on a plus sign and choose any block you want to add to "
+"the page."
+msgstr ""
+"Konten dapat berupa teks, gambar, video, tabel, dan lain-lain. Klik tanda "
+"tambah untuk memilih blok untuk halaman Anda."
+
+#: includes/Admin/Assets.php:93
+msgid "Continue"
+msgstr "Lanjutkan"
+
+#: includes/Admin/Hooks.php:467
+msgid "Continue setup"
+msgstr "Lanjutkan setup"
+
+#: includes/Admin/Onboarding/Onboarding.php:242
+msgid "Create a catchy headline"
+msgstr "Buat headline yang menarik"
+
+#: includes/Admin/Onboarding/Onboarding.php:243
+msgid ""
+"Create a headline that grabs your visitors attention and accurately "
+"represents the content of your post."
+msgstr ""
+"Buat headline konten yang akan menarik perhatian banyak pengunjung. Pastikan "
+"headline sesuai dengan isi konten yang akan diposting."
+
+#: includes/Admin/Assets.php:141 includes/Admin/Onboarding/Onboarding.php:211
+msgid "Create a logo"
+msgstr "Buat logo"
+
+#: includes/Admin/Onboarding/Onboarding.php:393
+msgid "Create a new page called “My projects”"
+msgstr "Buat halaman baru seperti \"Produk Saya\""
+
+#: includes/Admin/Onboarding/Onboarding.php:362
+msgid "Create a page describing your services"
+msgstr "Buat halaman tentang layanan Anda"
+
+#: includes/Admin/Onboarding/PluginManager.php:65
+msgid ""
+"Create additional shipment methods in WooCommerce and enable pricing based "
+"on cart weight or total."
+msgstr ""
+"Buat metode pengiriman tambahan di WooCommerce dan aktifkan penetapan harga "
+"berdasarkan berat atau total keranjang."
+
+#: includes/Admin/Onboarding/PluginManager.php:77
+msgid "Create Chronopost & Mondial relay shipping labels and send them easily."
+msgstr ""
+"Buat label pengiriman estafet Chronopost & Mondial dan kirimkan dengan mudah."
+
+#: includes/Admin/Onboarding/Onboarding.php:238
+msgid "Create your first blog post"
+msgstr "Buat blog pertama Anda"
+
+#: includes/Admin/Assets.php:153 includes/Admin/Assets.php:182
+msgid "Dismiss"
+msgstr "Tutup"
+
+#: includes/Admin/Surveys.php:48
+msgid "Do you have any comments/suggestions to improve our AI tools?"
+msgstr "Apakah Anda memiliki saran untuk meningkatkan tool AI kami?"
+
+#: includes/Admin/Surveys.php:34
+msgid ""
+"Do you have any comments/suggestions to improve our WooCommerce onboarding?"
+msgstr "Apakah Anda memiliki saran untuk meningkatkan setup WooCommerce kami?"
+
+#: includes/Admin/Assets.php:208
+msgid ""
+"Domain propagation can take up to 24 hours. Your domain will propagate "
+"automatically, and you don't need to take any action during this time."
+msgstr ""
+"Propagasi domain berlangsung hingga 24 jam. Domain akan dihubungkan secara "
+"otomatis dan Anda tidak perlu melakukan tindakan apa pun selama proses "
+"berlangsung."
+
+#: includes/Admin/Onboarding/Onboarding.php:246
+msgid "Draft your post"
+msgstr "Buat draft postingan Anda"
+
+#: includes/Admin/Assets.php:171 includes/Admin/Onboarding/Onboarding.php:312
+msgid "Edit an image"
+msgstr "Edit gambar"
+
+#: includes/Admin/Assets.php:165 includes/Admin/Onboarding/Onboarding.php:281
+msgid "Edit description"
+msgstr "Edit deskripsi"
+
+#: includes/Admin/Assets.php:163 includes/Admin/Onboarding/Onboarding.php:277
+msgid "Edit post"
+msgstr "Edit postingan"
+
+#: includes/Admin/Assets.php:136 includes/Admin/Onboarding/Onboarding.php:269
+msgid "Edit post description"
+msgstr "Edit deskripsi postingan"
+
+#: includes/Admin/Assets.php:138 includes/Admin/Onboarding/Onboarding.php:331
+msgid "Edit site title"
+msgstr "Edit judul situs"
+
+#: includes/Admin/Assets.php:149 includes/Admin/Onboarding/Onboarding.php:471
+msgid ""
+"Enter your store details so we can help you set up your online store faster."
+msgstr ""
+"Masukkan detail toko Anda agar kami dapat menyiapkan toko online Anda lebih "
+"cepat."
+
+#: includes/Admin/Assets.php:97 includes/Admin/Onboarding/Onboarding.php:560
+msgid ""
+"Expand your audience with the help of Omnisend. Create email campaigns that "
+"drive sales."
+msgstr ""
+"Perluas audiens Anda dengan bantuan Omnisend. Buat email promosi untuk "
+"meningkatkan penjualan."
+
+#: includes/Admin/Onboarding/PluginManager.php:55
+msgid "Extends WooCommerce with a RedSys gateway."
+msgstr "Kembangkan WooCommerce dengan gateway RedSys."
+
+#: includes/Admin/Onboarding/Onboarding.php:385
+msgid "Finalize the page"
+msgstr "Selesaikan halaman"
+
+#: includes/Admin/Assets.php:218
+msgid "Find the answers you need in our Knowledge Base"
+msgstr "Temukan jawaban yang Anda butuhkan di Pengetahuan Dasar kami"
+
+#: includes/Admin/Assets.php:167 includes/Admin/Onboarding/Onboarding.php:304
+msgid "Find the Media page"
+msgstr "Temukan halaman Media"
+
+#: includes/Admin/Assets.php:227
+msgid "Follow these steps to complete your setup"
+msgstr "Ikuti langkah-langkah berikut untuk menyelesaikan setup"
+
+#: includes/Admin/Assets.php:183
+msgid "Generate content"
+msgstr "Buat konten"
+
+#: includes/Admin/Assets.php:185 includes/Admin/Onboarding/WelcomeCards.php:37
+#| msgid "Create content with AI"
+msgid "Generate content with AI"
+msgstr "Buat konten pakai AI"
+
+#: includes/Admin/Assets.php:206
+msgid "Get a domain"
+msgstr "Dapatkan domain"
+
+#: includes/Admin/Hooks.php:322
+msgid "Get Discount"
+msgstr "Klaim Diskon"
+
+#: includes/Admin/Assets.php:186
+msgid ""
+"Get images, text, and SEO keywords created for you instantly – try <strong>"
+"AI Content Creator</strong>."
+msgstr ""
+"Coba <strong>AI Content Creator</strong> dan dapatkan gambar, teks, dan "
+"keyword SEO khusus untuk Anda dengan cepat."
+
+#: includes/Admin/Onboarding/WelcomeCards.php:39
+msgid "Get images, text, and SEO keywords created for you instantly."
+msgstr "Dapatkan gambar, teks, dan keyword SEO khusus untuk Anda dengan cepat."
+
+#: includes/Admin/Assets.php:225
+msgid "Get in touch with our live specialists"
+msgstr "Hubungi spesialis kami secara langsung"
+
+#: includes/Admin/Assets.php:111 includes/Admin/Onboarding/Onboarding.php:515
+msgid ""
+"Get ready to accept customer payments. Let them pay for your products and "
+"services with ease."
+msgstr ""
+"Saatnya terima pembayaran dari pelanggan untuk produk dan layanan Anda "
+"dengan mudah."
+
+#: includes/Admin/Onboarding/Onboarding.php:473
+#| msgid "Get started"
+msgid "Get Started"
+msgstr "Coba Sekarang"
+
+#: includes/Admin/Assets.php:146
+msgid "Get started!"
+msgstr "Coba sekarang!"
+
+#: includes/Admin/Assets.php:106
+msgid "Getting your features ready"
+msgstr "Menyiapkan fitur Anda"
+
+#: includes/Admin/Onboarding/Onboarding.php:377
+msgid "Give a page a short title such as “Our Services”"
+msgstr "Berikan judul singkat pada halaman, seperti \"Layanan Kami\""
+
+#: includes/Admin/Onboarding/Onboarding.php:394
+msgid ""
+"Give your page a name (e.g. \"My Portfolio\"), then click the \"+\" button "
+"in the editor to add a new block."
+msgstr ""
+"Berikan nama pada halaman Anda (misalnya \"Portofolio Saya\"), lalu klik "
+"tombol \"+\" di editor untuk menambahkan blok baru."
+
+#: includes/Admin/Assets.php:161 includes/Admin/Onboarding/Onboarding.php:273
+msgid "Go to Posts"
+msgstr "Buka Postingan"
+
+#: includes/Admin/Assets.php:142 includes/Admin/Assets.php:173
+#: includes/Admin/Onboarding/Onboarding.php:215
+#: includes/Admin/Onboarding/Onboarding.php:335
+msgid "Go to the Customize page"
+msgstr "Buka halaman Customize"
+
+#: includes/Admin/Onboarding/Onboarding.php:582
+msgid "Google Site Kit"
+msgstr "Google Site Kit"
+
+#: includes/Admin/Assets.php:160
+msgid "Got it!"
+msgstr "OK!"
+
+#: includes/Admin/Assets.php:219
+msgid "Help Center"
+msgstr "Bantuan Pelanggan"
+
+#: includes/Admin/Assets.php:158
+msgid "Hide completed"
+msgstr "Berhasil disembunyikan"
+
+#: includes/Admin/Onboarding/PluginManager.php:62
+msgid ""
+"Hosted services for WooCommerce: automated tax calculation, shipping label "
+"printing, and smoother payment setup."
+msgstr ""
+"Layanan hosting WooCommerce: hitung pajak otomatis, cetak pengiriman, dan "
+"setup pembayaran yang lebih lancar."
+
+#. Author of the plugin
+msgid "Hostinger"
+msgstr "Hostinger"
+
+#: includes/Admin/Assets.php:221
+msgid "Hostinger Academy"
+msgstr "Hostinger Academy"
+
+#. Plugin Name of the plugin
+msgid "Hostinger Easy Onboarding"
+msgstr "Hostinger Easy Onboarding"
+
+#. Description of the plugin
+msgid "Hostinger Easy Onboarding WordPress plugin."
+msgstr "Plugin WordPress Hostinger Easy Onboarding"
+
+#: includes/Admin/Assets.php:164 includes/Admin/Onboarding/Onboarding.php:278
+msgid ""
+"Hover over the chosen post to see the options menu. Click on the Edit button "
+"to open the post editor."
+msgstr ""
+"Arahkan kursor ke postingan yang diinginkan untuk melihat menu opsi. Klik "
+"tombol Edit untuk membuka post editor."
+
+#: includes/Admin/Surveys.php:41
+msgid "How could we make it easier to create a new WordPress website?"
+msgstr ""
+"Bagaimana kami dapat membantu mempermudah permbuatan situs WordPress baru?"
+
+#: includes/Admin/Assets.php:209 includes/Admin/Views/Learn.php:8
+msgid "How to Add Your WordPress Website to Google Search Console"
+msgstr "Cara Menambahkan Situs WordPress Anda ke Google Search Console"
+
+#: includes/Admin/Assets.php:214 includes/Admin/Views/Learn.php:33
+msgid "How to Back Up a WordPress Site"
+msgstr "Cara Backup Situs WordPress"
+
+#: includes/Admin/Assets.php:211 includes/Admin/Views/Learn.php:18
+msgid "How to Clear Cache in WordPress Website"
+msgstr "Cara Menghapus Cache di Situs WordPress"
+
+#: includes/Admin/Assets.php:210 includes/Admin/Views/Learn.php:13
+msgid "How to Create a WordPress Contact Us Page"
+msgstr "Cara Buat Halaman Hubungi Kami di WordPress"
+
+#: includes/Admin/Assets.php:212 includes/Admin/Views/Learn.php:23
+msgid "How to Edit the Footer in WordPress"
+msgstr "Cara Edit Footer di WordPress"
+
+#: includes/Admin/Assets.php:215 includes/Admin/Views/Learn.php:38
+msgid "How to Import Images Into WordPress Website"
+msgstr "Cara Impor Gambar Ke Situs WordPress"
+
+#: includes/Admin/Assets.php:124
+msgid "How to Point Domain Name to Web Hosting"
+msgstr "Cara Mengarahkan Nama Domain ke Web Hosting"
+
+#: includes/Admin/Assets.php:216 includes/Admin/Views/Learn.php:43
+msgid "How to Set Up WordPress SMTP"
+msgstr "Cara Setup SMTP WordPress"
+
+#: includes/Admin/Surveys.php:40
+msgid ""
+"How would you rate your experience building a website based on a pre-built "
+"template? (Score 1-10)"
+msgstr ""
+"Seberapa puaskah Anda dengan template siap pakai untuk membuat website? "
+"(Skor 1-10)"
+
+#: includes/Admin/Surveys.php:33
+msgid ""
+"How would you rate your experience setting up a WooCommerce site on our "
+"hosting?"
+msgstr ""
+"Seberapa puaskah Anda dengan proses setup situs WooCommerce di hosting kami?"
+
+#: includes/Admin/Surveys.php:47
+msgid ""
+"How would you rate your experience using our AI content generation tools in "
+"onboarding? (Scale 1-10)"
+msgstr ""
+"Seberapa puaskah Anda menggunakan tool AI untuk buat konten selama proses "
+"setup? (Skala 1-10)"
+
+#. Plugin URI of the plugin
+msgid "https://hostinger.com"
+msgstr "https://hostinger.com"
+
+#. Author URI of the plugin
+msgid "https://www.hostinger.com"
+msgstr "https://www.hostinger.com"
+
+#: includes/Admin/Assets.php:172 includes/Admin/Onboarding/Onboarding.php:313
+msgid ""
+"If you wish to edit the image, click on the chosen image and click the Edit "
+"Image button. You can now crop, rotate, flip or scale the selected image."
+msgstr ""
+"Untuk edit gambar, klik gambar dan klik tombol Edit Gambar. Anda bisa "
+"memotong, memutar, membalik, atau mengatur ukuran gambar."
+
+#: includes/Admin/Onboarding/Onboarding.php:398
+msgid ""
+"In the block menu, search for \"Gallery\" and select the Gallery block. "
+"Upload the images you want to showcase in your portfolio, then adjust the "
+"layout and add captions if needed."
+msgstr ""
+"Di menu blok, cari \"Gallery\" dan pilih Gallery block. Upload gambar yang "
+"ingin Anda tampilkan di portofolio Anda, lalu sesuaikan layout dan tambahkan "
+"keterangan jika diperlukan."
+
+#: includes/Admin/Assets.php:135 includes/Admin/Assets.php:174
+#: includes/Admin/Onboarding/Onboarding.php:336
+msgid ""
+"In the left sidebar, click Appearance to expand the menu. In the Appearance "
+"section, click Customize. The Customize page will open."
+msgstr ""
+"Di sidebar kiri, klik Appearance untuk melihat menu lainnya. Di bagian "
+"Appearance, klik Customize. Halaman Customize akan terbuka."
+
+#: includes/Admin/Onboarding/Onboarding.php:216
+msgid ""
+"In the left sidebar, click Appearance to expand the menu. In the Appearance "
+"section, click Customize. The Customize page will open. "
+msgstr ""
+"Di sidebar kiri, klik Appearance untuk melihat menu lainnya. Di bagian "
+"Appearance, klik Customize. Halaman Customize akan terbuka. "
+
+#: includes/Admin/Assets.php:176 includes/Admin/Onboarding/Onboarding.php:340
+msgid "In the left sidebar, click Site Identity and edit your site title."
+msgstr "Di sidebar kiri, klik Site Identity dan ubah judul situs Anda."
+
+#: includes/Admin/Assets.php:144
+msgid ""
+"In the left sidebar, click Site Identity, then click on the Select Site Icon "
+"button. Here, you can upload your brand logo."
+msgstr ""
+"Di sidebar kiri, klik Site Identity, lalu klik tombol Select Site untuk "
+"upload logo brand Anda."
+
+#: includes/Admin/Onboarding/Onboarding.php:220
+msgid ""
+"In the left sidebar, click Site Identity, then click on the Select Site Icon "
+"button. Here, you can upload your brand logo. "
+msgstr ""
+"Di sidebar kiri, klik Site Identity, lalu klik tombol Select Site untuk "
+"upload logo brand Anda. "
+
+#: includes/Admin/Assets.php:168
+msgid ""
+"In the left sidebar, find the Media button. Click on the Library button to "
+"see all the images you have uploaded to your website."
+msgstr ""
+"Di sidebar kiri, klik tombol Media. Klik tombol Library untuk melihat semua "
+"gambar yang sudah Anda upload ke website Anda."
+
+#: includes/Admin/Onboarding/Onboarding.php:305
+msgid ""
+"In the left sidebar, find the Media button. The Media Library page allows "
+"you to edit, view, and delete media previously uploaded to your website."
+msgstr ""
+"Di sidebar kiri, klik tombol Media. Di halaman Media Library, Anda dapat "
+"mengubah, melihat, dan menghapus media yang diupload di website Anda."
+
+#: includes/Admin/Assets.php:190 includes/Admin/Onboarding/Onboarding.php:410
+msgid ""
+"In the left sidebar, find the Pages menu and click on Add New button. You "
+"will see the WordPress page editor. Each paragraph, image, or video in the "
+"WordPress editor is presented as a “block” of content."
+msgstr ""
+"Di sidebar kiri, klik menu Pages dan klik tombol Add New button. Anda akan "
+"melihat editor halaman WordPress. Setiap paragraf, gambar, atau video di "
+"editor WordPress disajikan sebagai “blok” konten."
+
+#: includes/Admin/Assets.php:162 includes/Admin/Onboarding/Onboarding.php:274
+msgid ""
+"In the left sidebar, find the Posts button. Click on the All Posts button "
+"and find the post for which you want to change the description."
+msgstr ""
+"Di sidebar kiri, klik tombol Posts. Klik tombol All Posts dan klik postingan "
+"yang ingin diubah deskripsinya."
+
+#: includes/Admin/Assets.php:116
+msgid ""
+"Increase your sites visibility by enabling its discoverability in the Google "
+"search engine."
+msgstr ""
+"Meningkatkan visibilitas situs dengan membuatnya ditemukan di pencarian "
+"Google."
+
+#: includes/Admin/Assets.php:184
+msgid "Installed"
+msgstr "Terinstal"
+
+#: includes/Admin/Assets.php:127
+#: includes/Admin/Views/Partials/PromotionalBanner.php:5
+msgid "Invite a Friend, Earn Up to $100"
+msgstr "Undang Teman, Dapat Komisi $100"
+
+#: includes/Admin/Onboarding/PluginManager.php:52
+msgid ""
+"It enables a WooCommerce site to accept payments through UPI apps like BHIM, "
+"Google Pay, Paytm, PhonePe or any Banking UPI app. Avoid payment gateway "
+"charges."
+msgstr ""
+"Dengan fitur ini, situs WooCommerce Anda dapat menerima pembayaran dari "
+"aplikasi UPI seperti BHIM, Google Pay, Paytm, PhonePe, atau aplikasi UPI "
+"Perbankan tanpa tambahan biaya transaksi."
+
+#: includes/Admin/Hooks.php:463
+msgid "Just a few more steps to launch your online store"
+msgstr "Tinggal beberapa langkah lagi untuk mengaktifkan toko online Anda"
+
+#: includes/Admin/Assets.php:217
+msgid "Knowledge Base"
+msgstr "Pengetahuan Dasar"
+
+#: includes/Admin/Menu.php:86 includes/Admin/Menu.php:87
+msgid "Learn"
+msgstr "Lihat"
+
+#: includes/Admin/Assets.php:213 includes/Admin/Views/Learn.php:28
+msgid "LiteSpeed Cache: How to Get 100% WordPress Optimization"
+msgstr "LiteSpeed Cache: Tool Optimasi Efektif untuk Performa Website"
+
+#: includes/Admin/Onboarding/Onboarding.php:386
+msgid ""
+"Make the page easy to read and navigate by using headings and bullet points. "
+"Include a clear call-to-action (CTA) to encourage visitors to take the next "
+"step for example, to contact you via email or contact form."
+msgstr ""
+"Buat agar halaman semakin mudah dibaca dengan heading dan bullet point. "
+"Sertakan CTA (call-to-action) yang jelas bagi pengunjung. Misalnya, cara "
+"menghubungi Anda melalui email atau formulir kontak."
+
+#: includes/Admin/Assets.php:95 includes/Admin/Onboarding/Onboarding.php:536
+msgid "Manage shipping"
+msgstr "Kelola pengiriman"
+
+#: includes/Admin/Assets.php:94 includes/Admin/Onboarding/Onboarding.php:556
+msgid "Market your business"
+msgstr "Promosikan bisnis Anda"
+
+#: includes/Admin/Assets.php:120
+msgid "Nameserver"
+msgstr "Nameserver"
+
+#: includes/Helper.php:295
+msgid "No PHP files found in plugin directory"
+msgstr "Tidak ada file PHP yang ditemukan di direktori plugin"
+
+#: includes/Admin/Assets.php:154
+msgid "Now <strong>finish setting up</strong> the plugins you’ve installed."
+msgstr ""
+"Selanjutnya, <strong>selesaikan pengaturan</strong> plugin yang telah Anda "
+"instal."
+
+#: includes/Admin/Views/Partials/RateUs.php:38
+#| msgid ""
+#| "on <a\n"
+#| "\t\t\t   href=\"https://wordpress."
+#| "org/support/plugin/hostinger/reviews/#new-post\"\n"
+#| "\t\t\t   target=\"_blank\" rel=\"noopener noreferrer\">WordPress.org</a>"
+msgid ""
+"on <a href=\"https://wordpress.org/support/plugin/hostinger/reviews/#new-"
+"post\" target=\"_blank\" rel=\"noopener noreferrer\">WordPress.org</a>"
+msgstr ""
+"di <a href=\"https://wordpress.org/support/plugin/hostinger/reviews/#new-"
+"post\" target=\"_blank\" rel=\"noopener noreferrer\">WordPress.org</a>"
+
+#: includes/Admin/Menu.php:27 includes/Admin/Menu.php:76
+#: includes/Admin/Menu.php:77
+msgid "Onboarding"
+msgstr "Onboarding"
+
+#: includes/Admin/Onboarding/Onboarding.php:251
+msgid ""
+"Once you have finished drafting your post, read it over to check for errors, "
+"make any necessary revisions, and then publish it to your blog."
+msgstr ""
+"Setelah draft postingan blog Anda selesai, baca dan periksa postingan Anda "
+"sekali lagi. Pastikan tulisan enak dibaca dan tidak ada salah ejaan. Jika "
+"sudah puas, langsung onlinekan blog Anda."
+
+#: includes/Admin/Onboarding/Onboarding.php:402
+msgid ""
+"Once you're happy with your portfolio post, click the \"Publish\" button to "
+"make it live on your website. You can add a link to your main navigation "
+"menu or other relevant posts to make it easy for visitors to find."
+msgstr ""
+"Klik tombol \"Publish\" untuk mengonlinekan postingan portfolio di website "
+"Anda. Selain itu, Anda dapat menambahkan link ke menu navigasi utama atau "
+"postingan yang relevan agar pengunjung dapat menemukannya dengan lebih mudah."
+
+#: includes/Admin/Assets.php:91 includes/Admin/Onboarding/Onboarding.php:78
+msgid "Online store setup"
+msgstr "Setup toko online"
+
+#: includes/Admin/Assets.php:222
+msgid ""
+"Opt-in to receive tips, discounts, and recommendations from the WooCommerce "
+"team directly in your inbox."
+msgstr ""
+"Opt-in untuk menerima tips, diskon, dan rekomendasi dari tim WooCommerce "
+"langsung dari email Anda."
+
+#: includes/Admin/Assets.php:197
+msgid "Other"
+msgstr "Lainnya"
+
+#: includes/Admin/Assets.php:193
+msgid "Payment methods"
+msgstr "Metode pembayaran"
+
+#: includes/Admin/Onboarding/PluginManager.php:37
+msgid ""
+"PayPal's latest complete payments processing solution. Accept PayPal, Pay "
+"Later, credit/debit cards, alternative digital wallets local payment types "
+"and bank accounts."
+msgstr ""
+"Solusi pembayaran lengkap terbaru Paypal. Terima pembayaran PayPal, Pay "
+"Later, kartu kredit/debit, pembayaran digital wallet lokal alternatif dan "
+"transfer bank."
+
+#: includes/Admin/Assets.php:125
+msgid "Play on YouTube"
+msgstr "Tonton di Youtube"
+
+#: includes/Helper.php:290
+msgid "Plugin directory not found"
+msgstr "Direktori plugin tidak ditemukan"
+
+#: includes/Helper.php:305
+msgid "Plugin main file not found"
+msgstr "File utama plugin tidak ditemukan"
+
+#: includes/Admin/Assets.php:92
+msgid "Preview website"
+msgstr "Pratinjau website"
+
+#: includes/Admin/Onboarding/Onboarding.php:250
+msgid "Proofread and publish"
+msgstr "Edit dan onlinekan"
+
+#: includes/Admin/Assets.php:204 includes/Admin/Onboarding/Onboarding.php:421
+msgid "Publish the page"
+msgstr "Onlinekan halaman"
+
+#: includes/Admin/Onboarding/Onboarding.php:401
+msgid "Publish your page"
+msgstr "Onlinekan halaman"
+
+#: includes/Admin/Views/Partials/RateUs.php:2
+msgid "Rate this plugin"
+msgstr "Beri nilai plugin ini"
+
+#: includes/Admin/Assets.php:196
+msgid "Recommended for you"
+msgstr "Direkomendasikan untuk Anda"
+
+#: includes/Admin/Assets.php:187 includes/Admin/Onboarding/WelcomeCards.php:27
+msgid "Run an Amazon Affiliate site"
+msgstr "Jalankan situs Afiliasi Amazon"
+
+#: includes/Admin/Assets.php:96
+msgid "Run email marketing campaigns"
+msgstr "Menjalankan email marketing campaign"
+
+#: includes/Admin/Onboarding/PluginManager.php:46
+msgid ""
+"Securely accept payments, synchronize sales, and seamlessly manage inventory "
+"and product data between WooCommerce and Square POS."
+msgstr ""
+"Menerima pembayaran dengan aman, menyinkronkan penjualan, dan mengelola "
+"inventaris dan data produk di WooCommerce dan Square POS dengan lancar."
+
+#: includes/Admin/Assets.php:114 includes/Admin/Onboarding/Onboarding.php:493
+msgid ""
+"Sell products, services, and digital downloads. Set up and customize each "
+"item to fit your business needs."
+msgstr ""
+"Jual produk, layanan, dan digital download. Setup dan atur setiap item agar "
+"sesuai dengan kebutuhan bisnis Anda."
+
+#: includes/Admin/Assets.php:109 includes/Admin/Onboarding/Onboarding.php:513
+msgid "Set up a payment method"
+msgstr "Setup metode pembayaran"
+
+#: includes/Admin/Assets.php:128
+msgid "Set up a website that works for you."
+msgstr "Setup website sesuai keinginan Anda."
+
+#: includes/Admin/Onboarding/WelcomeCards.php:17
+#| msgid "Set up your online store"
+msgid "Set up an online store"
+msgstr "Setup toko online Anda"
+
+#: includes/Admin/Assets.php:110 includes/Admin/Onboarding/Onboarding.php:517
+msgid "Set up payment method"
+msgstr "Setup metode pembayaran"
+
+#: includes/Admin/Assets.php:195
+msgid "Set up payments"
+msgstr "Setup pembayaran"
+
+#: includes/Admin/Onboarding/WelcomeCards.php:19
+#| msgid ""
+#| "Install <strong>WooCommerce</strong>, add products or services, and start "
+#| "selling today."
+msgid ""
+"Setup <strong>WooCommerce</strong>, add products or services, and start "
+"selling today."
+msgstr ""
+"Instal <strong>WooCommerce</strong>, tambahkan produk atau layanan, dan "
+"mulai berjualan."
+
+#: includes/Admin/Assets.php:115
+msgid "Setup Google Site Kit"
+msgstr "Setup Google Site Kit"
+
+#: includes/Admin/Assets.php:108 includes/Admin/Assets.php:148
+#| msgid "Set up my online store"
+msgid "Setup my online store"
+msgstr "Setup toko online"
+
+#: includes/Admin/Onboarding/Onboarding.php:586
+msgid "Setup now"
+msgstr "Setup sekarang"
+
+#: includes/Admin/Views/Partials/PromotionalBanner.php:9
+msgid ""
+"Share your referral link with friends and family and <b>receive 20% "
+"commission</b> for every successful referral."
+msgstr ""
+"Bagikan link referral ke teman dan keluarga Anda dan dapatkan <b>komisi "
+"20%</b> untuk setiap referral yang berhasil."
+
+#: includes/Admin/Assets.php:126
+msgid ""
+"Share your referral link with friends and family and <strong>receive 20% "
+"commission</strong> for every successful referral."
+msgstr ""
+"Bagikan link referral ke teman dan keluarga Anda dan dapatkan <b>komisi "
+"20%</b> untuk setiap referral yang berhasil."
+
+#: includes/Admin/Assets.php:98
+msgid "Ship products with ease"
+msgstr "Mengirim produk dengan mudah"
+
+#: includes/Admin/Assets.php:99 includes/Admin/Assets.php:194
+#: includes/Admin/Onboarding/Onboarding.php:540
+msgid "Shipping methods"
+msgstr "Metode pengiriman"
+
+#: includes/Rest/WooRoutes.php:47
+msgid "Shop locale is empty, please setup store first"
+msgstr "Lokasi toko kosong, silakan setup toko terlebih dahulu"
+
+#: includes/Admin/Assets.php:147 includes/Admin/Onboarding/Step.php:76
+msgid "Skip"
+msgstr "Lewati"
+
+#: includes/Rest/WooRoutes.php:117
+msgid "Sorry, there are activation errors."
+msgstr "Maaf, aktivasi gagal."
+
+#: includes/Rest/StepRoutes.php:69 includes/Rest/WooRoutes.php:53
+#: includes/Rest/WooRoutes.php:104 includes/Rest/WooRoutes.php:192
+msgid "Sorry, there are validation errors."
+msgstr "Maaf, validasi gagal."
+
+#: includes/Admin/Assets.php:117
+#: includes/Admin/Views/Partials/PromotionalBanner.php:24
+msgid "Start earning"
+msgstr "Bagikan link"
+
+#: includes/Rest/StepRoutes.php:88
+msgid "Step category and/or step does not exist."
+msgstr "Kategori langkah dan/atau langkah tidak tersedia."
+
+#: includes/Admin/Onboarding/Onboarding.php:469
+msgid "Store info"
+msgstr "Info toko"
+
+#: includes/Rest/WooRoutes.php:186
+msgid "Store location locale not found"
+msgstr "Lokasi toko tidak ditemukan"
+
+#: includes/Admin/Onboarding/PluginManager.php:33
+msgid "Take credit card payments on your store using Stripe."
+msgstr "Terima pembayaran kartu kredit dengan Stripe."
+
+#: includes/Admin/Assets.php:145 includes/Admin/Onboarding/Step.php:75
+msgid "Take me there"
+msgstr "Buka"
+
+#: includes/Admin/Assets.php:223
+msgid "Tell us a bit about your business"
+msgstr "Deskripsikan secara singkat tentang bisnis Anda"
+
+#. translators: %s php version
+#: hostinger-easy-onboarding.php:70
+msgid ""
+"The Hostinger Easy Onboarding plugin requires minimum PHP version of <b>"
+"%s</b>. "
+msgstr ""
+"Plugin Hostinger Easy Onboarding membutuhkan versi PHP minimum <b>%s</b>."
+
+#: includes/Admin/Onboarding/PluginManager.php:74
+msgid ""
+"The USPS Simple plugin calculates rates for domestic shipping dynamically "
+"using USPS API during checkout."
+msgstr ""
+"Plugin USPS Simple menghitung tarif untuk pengiriman domestik secara dinamis "
+"menggunakan API USPS saat pembayaran."
+
+#: includes/Admin/Onboarding/PluginManager.php:71
+msgid ""
+"This extension gives you the possibility to use the Colissimo shipping "
+"methods in WooCommerce"
+msgstr ""
+"Ekstensi ini memungkinkan Anda menggunakan metode pengiriman Colissimo di "
+"WooCommerce"
+
+#: includes/Admin/Assets.php:170 includes/Admin/Onboarding/Onboarding.php:309
+msgid ""
+"To upload a new image, click on Add New button on the Media Library page and "
+"select files."
+msgstr ""
+"Untuk upload gambar, klik tombol Add New di Media Library dan pilih file "
+"yang ingin diupload."
+
+#: includes/Admin/Assets.php:100 includes/Admin/Onboarding/Onboarding.php:565
+msgid "Try Omnisend"
+msgstr "Coba Omnisend"
+
+#: includes/Errors.php:31
+msgid "Unknown error code."
+msgstr "Kode error tidak dikenal."
+
+#: includes/Admin/Assets.php:137 includes/Admin/Assets.php:169
+#: includes/Admin/Onboarding/Onboarding.php:300
+#: includes/Admin/Onboarding/Onboarding.php:308
+msgid "Upload an image"
+msgstr "Upload gambar"
+
+#: includes/Admin/Assets.php:130 includes/Admin/Assets.php:143
+#: includes/Admin/Onboarding/Onboarding.php:207
+#: includes/Admin/Onboarding/Onboarding.php:219
+msgid "Upload your logo"
+msgstr "Upload logo Anda"
+
+#: includes/Admin/Onboarding/Onboarding.php:365
+msgid "Upload your portfolio projects"
+msgstr "Upload portfolio Anda"
+
+#: includes/Admin/Hooks.php:318
+msgid ""
+"Use the special discount code <b>ONLYHOSTINGER30</b> to get 30% off on "
+"Omnisend for 6 months when you upgrade."
+msgstr ""
+"Klaim kode diskon spesial <b>ONLYHOSTINGER30</b> untuk diskon upgrade 30% di "
+"Omnisend selama 6 bulan."
+
+#: includes/Admin/Assets.php:157
+msgid "View completed"
+msgstr "Lihat selesai"
+
+#: includes/Admin/Assets.php:155
+msgid "View plugins"
+msgstr "Lihat plugin"
+
+#: includes/Admin/Assets.php:119
+msgid "Wait for domain propagation"
+msgstr "Tunggu propagasi domain"
+
+#: includes/Errors.php:20
+msgid ""
+"We apologize for the inconvenience. The AI content generation process "
+"encountered a server error. Please try again later, and if the issue "
+"persists, kindly contact our support team for assistance."
+msgstr ""
+"Terjadi kesalahan server saat AI memproses konten Anda. Kami mohon maaf atas "
+"ketidaknyamanan ini. Silakan coba lagi nanti atau hubungi tim support kami "
+"untuk mendapatkan bantuan."
+
+#: includes/Admin/Assets.php:224
+msgid "We'll use this information to help you set up your store faster."
+msgstr "Kami akan menggunakan informasi ini untuk setup toko Anda lebih cepat."
+
+#: includes/Admin/Menu.php:50
+msgid "Website list"
+msgstr "Daftar website"
+
+#: includes/Admin/Assets.php:152 includes/Admin/Onboarding/Onboarding.php:41
+msgid "Website setup"
+msgstr "Setup website"
+
+#: includes/Admin/Assets.php:132
+msgid "Website URL"
+msgstr "URL website"
+
+#: includes/Admin/Assets.php:226
+msgid "Welcome to WordPress!"
+msgstr "Selamat datang di WordPress!"
+
+#: includes/Admin/Assets.php:104
+msgid "What type of products or services will you sell?"
+msgstr "Jenis produk atau layanan apa yang ingin dijual?"
+
+#: includes/Admin/Assets.php:103
+msgid "Where is your store located?"
+msgstr "Di mana lokasi toko Anda?"
+
+#: includes/Admin/Assets.php:220
+msgid "WordPress tutorials"
+msgstr "Tutorial WordPress"
+
+#: includes/Admin/Onboarding/Onboarding.php:382
+msgid ""
+"Write a brief introduction to your business, provide an overview of your "
+"services with descriptions and benefits, and use relevant images to support "
+"your content. Keep it simple and straightforward."
+msgstr ""
+"Tulis deskripsi singkat tentang bisnis Anda, seperti keunggulan layanan dan "
+"produk yang Anda tawarkan. Jangan lupa sertakan gambar yang relevan dengan "
+"konten Anda. Pastikan deskripsi yang Anda tulis singkat dan jelas."
+
+#: includes/Admin/Onboarding/Onboarding.php:247
+msgid ""
+"Write your content, making sure to include relevant keywords and images. You "
+"can use different blocks to create headings, paragraphs, lists, and other "
+"types of content."
+msgstr ""
+"Tulis konten dengan menyertakan keyword dan gambar yang relevan. Anda dapat "
+"menggunakan blok berbeda untuk membuat judul, paragraf, daftar, dan jenis "
+"konten lainnya."
+
+#. translators: %s php version
+#: hostinger-easy-onboarding.php:74
+msgid "You are running <b>%s</b> PHP version."
+msgstr "Anda menggunakan versi PHP <b>%s</b>."
+
+#: includes/Admin/Assets.php:200
+msgid ""
+"You can also set up a payment method without installing additional plugins."
+msgstr ""
+"Anda juga dapat mengatur metode pembayaran tanpa menginstal plugin tambahan."
+
+#: includes/Admin/Assets.php:199
+msgid ""
+"You can also set up a shipping method without installing additional plugins."
+msgstr ""
+"Anda juga dapat mengatur metode pengiriman tanpa menginstal plugin tambahan."
+
+#: includes/Admin/Assets.php:122
+msgid ""
+"You can connect domain to Hostinger by changing the nameservers. Different "
+"domain providers are have unique procedures for changing nameservers. Here "
+"are Hostinger's nameservers:"
+msgstr ""
+"Anda dapat menghubungkan domain ke Hostinger dengan mengubah nameserver. "
+"Setiap provider domain memiliki prosedur khusus untuk mengubah nameserver. "
+"Berikut nameserver Hostinger:"
+
+#: includes/Admin/Assets.php:166 includes/Admin/Onboarding/Onboarding.php:282
+msgid ""
+"You can see the whole post in the editor. Find the description part and "
+"change it to your preferences."
+msgstr ""
+"Anda dapat melihat semua postingan di editor. Klik bagian deskripsi dan edit "
+"sesuai kebutuhan Anda."
+
+#: includes/Admin/Assets.php:134
+msgid ""
+"You need to purchase a domain for your website before the preview domain "
+"becomes inaccessible. Find a desired website name using a <a style=\"text-"
+"decoration:none; font-weight:bold; color:#673de6\" target=\"_blank\" "
+"href=\"https://hpanel.hostinger.com/domains/domain-checker\" >domain name "
+"searcher.</a >"
+msgstr ""
+"Anda perlu membeli domain untuk website Anda sebelum domain pratinjau tidak "
+"dapat diakses. Temukan nama website impian dengan  <a style=\"text-"
+"decoration:none; font-weight:bold; color:#673de6\" target=\"_blank\" "
+"href=\"https://hpanel.hostinger.com/domains/domain-checker\" >tool cek nama "
+"domain.</a>"
+
+#: includes/Admin/Assets.php:102
+msgid "Your business email"
+msgstr "Email bisnis Anda"
+
+#: includes/Admin/Assets.php:107 includes/Admin/Assets.php:150
+msgid "Your progress"
+msgstr "Progres Anda"
+
+#: includes/Admin/Assets.php:101
+msgid "Your store name"
+msgstr "Nama toko Anda"
+
+#: includes/Admin/Assets.php:133
+msgid ""
+"Your website is already published and can be accessed using Hostinger free "
+"temporary subdomain right now. Here is the current URL of your website:"
+msgstr ""
+"Website Anda berhasil online dan dapat diakses menggunakan subdomain gratis "
+"sementara dari Hostinger. Berikut adalah URL website Anda saat ini:"
+
+#: includes/Admin/Assets.php:156
+msgid "You’re done setting up your online store!"
+msgstr "Setup toko sudah selesai!"
+
+#: includes/Admin/Assets.php:131
+msgid "👋 Welcome to WordPress"
+msgstr "👋 Selamat datang di WordPress"
