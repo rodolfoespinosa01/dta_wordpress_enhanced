@@ -69,16 +69,52 @@ function cap_auth_remove_roles() {
     remove_role('user');
 }
 
-// Add Logout Link to the Menu for Logged-in Users
-function cap_auth_add_logout_link_to_menu($items, $args) {
-    // Check if the user is logged in and if this is the primary menu
-    if (is_user_logged_in() && $args->theme_location == 'primary') {
-        $logout_url = wp_logout_url(home_url()); // Redirect to homepage on logout
-        $items .= '<li class="menu-item"><a href="' . esc_url($logout_url) . '">Logout</a></li>';
+function cap_auth_dynamic_menu_items($items, $args) {
+    // Check if this is the 'main' menu location
+    if ($args->theme_location == 'primary') {
+        foreach ($items as $key => $item) {
+            // Get the current user and their role
+            $user = wp_get_current_user();
+            $is_logged_in = is_user_logged_in();
+            $is_admin = in_array('admin', (array) $user->roles);
+            $is_user = in_array('user', (array) $user->roles);
+
+            // Hide Admin Dashboard unless logged in as Admin
+            if ($item->title == 'Admin Dashboard' && (!$is_logged_in || !$is_admin)) {
+                unset($items[$key]);
+            }
+
+            // Hide User Dashboard unless logged in as User
+            if ($item->title == 'User Dashboard' && (!$is_logged_in || !$is_user)) {
+                unset($items[$key]);
+            }
+
+            // Hide User Login and User Registration if any user is logged in
+            if (($item->title == 'User Login' || $item->title == 'User Registration') && $is_logged_in) {
+                unset($items[$key]);
+            }
+
+            // Add a custom "Log Out" link if the user is logged in
+            if ($is_logged_in && $item->title == 'User Registration') {
+                $logout_url = wp_logout_url(home_url()); // Redirect to homepage after logout
+                $logout_item = (object) [
+                    'title' => 'Log Out',
+                    'url' => $logout_url,
+                    'menu_item_parent' => 0,
+                    'ID' => 'logout',
+                    'db_id' => 'logout',
+                    'classes' => ['menu-item', 'menu-item-logout'],
+                ];
+                $items[] = $logout_item; // Add the logout item
+            }
+        }
     }
+
     return $items;
 }
-add_filter('wp_nav_menu_items', 'cap_auth_add_logout_link_to_menu', 10, 2);
+add_filter('wp_nav_menu_objects', 'cap_auth_dynamic_menu_items', 10, 2);
+
+
 
 // Optional: Redirect users after login based on role
 function cap_auth_redirect_after_login($redirect_to, $request, $user) {
