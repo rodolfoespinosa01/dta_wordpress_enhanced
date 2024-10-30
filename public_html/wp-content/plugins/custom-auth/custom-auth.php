@@ -16,7 +16,6 @@ define('CAP_PLUGIN_DIR', plugin_dir_path(__FILE__));
 // Include additional files
 include_once CAP_PLUGIN_DIR . 'includes/register.php';
 include_once CAP_PLUGIN_DIR . 'includes/login.php';
-include_once CAP_PLUGIN_DIR . 'includes/dashboard.php';
 
 // Activation Hook: Set up custom roles and flush rewrite rules
 function cap_auth_activate() {
