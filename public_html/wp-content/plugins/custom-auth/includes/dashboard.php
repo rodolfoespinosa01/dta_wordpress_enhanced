@@ -3,7 +3,7 @@
 function cap_auth_admin_dashboard_shortcode() {
     // Restrict access to Admin role only
     if (!is_user_logged_in() || !current_user_can('admin')) {
-        wp_redirect(home_url()); // Redirect non-admin users to the homepage
+        wp_safe_redirect(home_url()); // Redirect non-admin users to the homepage
         exit;
     }
 
@@ -12,6 +12,7 @@ function cap_auth_admin_dashboard_shortcode() {
 }
 add_shortcode('cap_auth_dashboard', 'cap_auth_admin_dashboard_shortcode');
 
+// Shortcode for User Dashboard
 function cap_auth_user_dashboard_shortcode() {
     // Allow access if in the WordPress admin area (to allow editing)
     if (is_admin()) {
@@ -24,7 +25,7 @@ function cap_auth_user_dashboard_shortcode() {
 
     // Restrict access: allow only Users or Master Admin
     if (!is_user_logged_in() || (!in_array('user', $user->roles) && !in_array('master_admin', $user->roles))) {
-        wp_redirect(home_url()); // Redirect non-authorized roles to the homepage
+        wp_safe_redirect(home_url()); // Redirect non-authorized roles to the homepage
         exit;
     }
 
@@ -37,7 +38,7 @@ function cap_auth_user_dashboard_shortcode() {
         $dashboard_message = "<p>You are currently unassigned to any specific admin. Please contact support for further assistance.</p>";
     } else {
         $admin_user = get_user_by('ID', $associated_admin_id);
-        $admin_name = $admin_user ? $admin_user->display_name : 'Your Admin';
+        $admin_name = $admin_user ? esc_html($admin_user->display_name) : 'Your Admin';
 
         $dashboard_message = "<p>Welcome to your dashboard! You are currently associated with admin: <strong>$admin_name</strong>.</p>";
     }
@@ -54,4 +55,3 @@ function cap_auth_user_dashboard_shortcode() {
     return ob_get_clean();
 }
 add_shortcode('cap_auth_user_dashboard', 'cap_auth_user_dashboard_shortcode');
-

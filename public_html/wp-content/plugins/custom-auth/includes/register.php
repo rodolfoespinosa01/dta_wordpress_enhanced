@@ -7,14 +7,14 @@ function cap_auth_admin_register_shortcode() {
     }
 
     // Check if an admin link with a valid token is used (e.g., ?admin_token=1)
-    if (!isset($_GET['admin_token']) || $_GET['admin_token'] != '1') {
+    if (!isset($_GET['admin_token']) || $_GET['admin_token'] !== '1') {
         // Redirect to homepage if token is missing or invalid
-        wp_redirect(home_url());
+        wp_safe_redirect(home_url());
         exit;
     }
 
     // Form processing
-    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['email'], $_POST['password'])) {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'], $_POST['password'])) {
         $email = sanitize_email($_POST['email']);
         $password = sanitize_text_field($_POST['password']);
 
@@ -31,7 +31,7 @@ function cap_auth_admin_register_shortcode() {
         // Register new Admin
         $user_id = wp_create_user($email, $password, $email);
         if (is_wp_error($user_id)) {
-            return '<p>Registration failed: ' . $user_id->get_error_message() . '</p>';
+            return '<p>Registration failed: ' . esc_html($user_id->get_error_message()) . '</p>';
         }
 
         // Assign 'admin' role
@@ -43,7 +43,7 @@ function cap_auth_admin_register_shortcode() {
         wp_set_auth_cookie($user_id);
 
         // Redirect to Admin Dashboard
-        wp_redirect(site_url('/admin-dashboard'));
+        wp_safe_redirect(site_url('/admin-dashboard'));
         exit;
     }
 
@@ -75,7 +75,7 @@ function cap_auth_user_register_shortcode() {
     $admin_id = isset($_GET['admin_id']) ? intval($_GET['admin_id']) : null;
 
     // Form processing
-    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['email'], $_POST['password'])) {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'], $_POST['password'])) {
         $email = sanitize_email($_POST['email']);
         $password = sanitize_text_field($_POST['password']);
 
@@ -92,7 +92,7 @@ function cap_auth_user_register_shortcode() {
         // Register new User
         $user_id = wp_create_user($email, $password, $email);
         if (is_wp_error($user_id)) {
-            return '<p>Registration failed: ' . $user_id->get_error_message() . '</p>';
+            return '<p>Registration failed: ' . esc_html($user_id->get_error_message()) . '</p>';
         }
 
         // Assign 'user' role
@@ -115,7 +115,7 @@ function cap_auth_user_register_shortcode() {
         wp_set_auth_cookie($user_id);
 
         // Redirect to User Dashboard
-        wp_redirect(site_url('/user-dashboard'));
+        wp_safe_redirect(site_url('/user-dashboard'));
         exit;
     }
 
@@ -135,5 +135,3 @@ function cap_auth_user_register_shortcode() {
     return ob_get_clean();
 }
 add_shortcode('cap_auth_user_register', 'cap_auth_user_register_shortcode');
-
-

@@ -7,10 +7,10 @@ function cap_auth_admin_login_shortcode() {
     }
 
     // Form processing
-    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['email'], $_POST['password'])) {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'], $_POST['password'])) {
         $email = sanitize_email($_POST['email']);
         $password = sanitize_text_field($_POST['password']);
-        
+
         // Attempt to log the user in
         $user = wp_signon([
             'user_login' => $email,
@@ -20,11 +20,11 @@ function cap_auth_admin_login_shortcode() {
 
         // Check for login errors
         if (is_wp_error($user)) {
-            return '<p>Login failed: ' . $user->get_error_message() . '</p>';
+            return '<p>Login failed: ' . esc_html($user->get_error_message()) . '</p>';
         }
 
         // Redirect to Admin Dashboard
-        wp_redirect(site_url('/admin-dashboard'));
+        wp_safe_redirect(site_url('/admin-dashboard'));
         exit;
     }
 
@@ -45,7 +45,6 @@ function cap_auth_admin_login_shortcode() {
 }
 add_shortcode('cap_auth_admin_login', 'cap_auth_admin_login_shortcode');
 
-
 // Shortcode for User Login Form
 function cap_auth_user_login_shortcode() {
     // Check if user is already logged in
@@ -54,10 +53,10 @@ function cap_auth_user_login_shortcode() {
     }
 
     // Form processing
-    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['email'], $_POST['password'])) {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'], $_POST['password'])) {
         $email = sanitize_email($_POST['email']);
         $password = sanitize_text_field($_POST['password']);
-        
+
         // Attempt to log the user in
         $user = wp_signon([
             'user_login' => $email,
@@ -67,11 +66,11 @@ function cap_auth_user_login_shortcode() {
 
         // Check for login errors
         if (is_wp_error($user)) {
-            return '<p>Login failed: ' . $user->get_error_message() . '</p>';
+            return '<p>Login failed: ' . esc_html($user->get_error_message()) . '</p>';
         }
 
         // Redirect to User Dashboard
-        wp_redirect(site_url('/user-dashboard'));
+        wp_safe_redirect(site_url('/user-dashboard'));
         exit;
     }
 
@@ -91,4 +90,3 @@ function cap_auth_user_login_shortcode() {
     return ob_get_clean();
 }
 add_shortcode('cap_auth_user_login', 'cap_auth_user_login_shortcode');
-
