@@ -1,35 +1,30 @@
 <?php
 // Shortcode for Admin Dashboard
 function cap_auth_admin_dashboard_shortcode() {
-    // Restrict access to Admin role only
-    if (!is_user_logged_in() || !current_user_can('admin')) {
-        wp_safe_redirect(home_url()); // Redirect non-admin users to the homepage
+    // Ensure only users with 'admin' or 'master_admin' role have access
+    $user = wp_get_current_user();
+    if (!is_user_logged_in() || (!in_array('admin', (array) $user->roles) && !in_array('master_admin', (array) $user->roles))) {
+        wp_safe_redirect(home_url()); // Redirect unauthorized users
         exit;
     }
 
-    // Dashboard content for admins
+    // Admin Dashboard content
     return '<h2>Welcome to the Admin Dashboard</h2><p>Admin-only content here.</p>';
 }
 add_shortcode('cap_auth_dashboard', 'cap_auth_admin_dashboard_shortcode');
 
+
 // Shortcode for User Dashboard
 function cap_auth_user_dashboard_shortcode() {
-    // Allow access if in the WordPress admin area (to allow editing)
-    if (is_admin()) {
-        return '<p>Editing User Dashboard content in admin mode.</p>';
-    }
-
-    // Get the current user info
-    $user_id = get_current_user_id();
+    // Allow access for 'user' or 'master_admin' roles only
     $user = wp_get_current_user();
-
-    // Restrict access: allow only Users or Master Admin
-    if (!is_user_logged_in() || (!in_array('user', $user->roles) && !in_array('master_admin', $user->roles))) {
-        wp_safe_redirect(home_url()); // Redirect non-authorized roles to the homepage
+    if (!is_user_logged_in() || (!in_array('user', (array) $user->roles) && !in_array('master_admin', (array) $user->roles))) {
+        wp_safe_redirect(home_url()); // Redirect unauthorized users
         exit;
     }
 
-    // Get the associated admin for the current user
+    // Get the current user's associated admin and status
+    $user_id = get_current_user_id();
     $associated_admin_id = get_user_meta($user_id, 'associated_admin', true);
     $status = get_user_meta($user_id, 'status', true);
 
@@ -55,3 +50,4 @@ function cap_auth_user_dashboard_shortcode() {
     return ob_get_clean();
 }
 add_shortcode('cap_auth_user_dashboard', 'cap_auth_user_dashboard_shortcode');
+

@@ -23,7 +23,13 @@ function cap_auth_admin_login_shortcode() {
             return '<p>Login failed: ' . esc_html($user->get_error_message()) . '</p>';
         }
 
-        // Redirect to Admin Dashboard
+        // Verify user role
+        if (!in_array('admin', (array) $user->roles) && !in_array('master_admin', (array) $user->roles)) {
+            wp_logout(); // Log out the user immediately if they aren't Admin
+            return '<p>Access denied: This login form is for Admins only.</p>';
+        }
+
+        // Redirect to Admin Dashboard if login is successful and user role is valid
         wp_safe_redirect(site_url('/admin-dashboard'));
         exit;
     }
@@ -44,6 +50,7 @@ function cap_auth_admin_login_shortcode() {
     return ob_get_clean();
 }
 add_shortcode('cap_auth_admin_login', 'cap_auth_admin_login_shortcode');
+
 
 // Shortcode for User Login Form
 function cap_auth_user_login_shortcode() {
@@ -69,7 +76,13 @@ function cap_auth_user_login_shortcode() {
             return '<p>Login failed: ' . esc_html($user->get_error_message()) . '</p>';
         }
 
-        // Redirect to User Dashboard
+        // Verify user role
+        if (!in_array('user', (array) $user->roles)) {
+            wp_logout(); // Log out the user immediately if they aren't a User
+            return '<p>Access denied: This login form is for Users only.</p>';
+        }
+
+        // Redirect to User Dashboard if login is successful and user role is valid
         wp_safe_redirect(site_url('/user-dashboard'));
         exit;
     }
@@ -90,3 +103,4 @@ function cap_auth_user_login_shortcode() {
     return ob_get_clean();
 }
 add_shortcode('cap_auth_user_login', 'cap_auth_user_login_shortcode');
+

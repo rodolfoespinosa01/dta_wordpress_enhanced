@@ -114,6 +114,17 @@ function cap_auth_dynamic_menu_items($items, $args) {
 }
 add_filter('wp_nav_menu_objects', 'cap_auth_dynamic_menu_items', 10, 2);
 
+function cap_auth_restrict_admin_access() {
+    // Get current user
+    $user = wp_get_current_user();
+
+    // Check if user has 'admin' role and is accessing wp-admin
+    if (in_array('admin', (array) $user->roles) && is_admin() && !defined('DOING_AJAX')) {
+        wp_redirect(home_url('/admin-dashboard')); // Redirect to custom admin dashboard
+        exit;
+    }
+}
+add_action('admin_init', 'cap_auth_restrict_admin_access');
 
 
 // Optional: Redirect users after login based on role

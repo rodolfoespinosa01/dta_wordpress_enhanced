@@ -71,8 +71,13 @@ function cap_auth_user_register_shortcode() {
         return '<p>You are already registered and logged in.</p>';
     }
 
-    // Capture admin_id from the URL if available
+    // Ensure the `admin_id` parameter is present in the URL
     $admin_id = isset($_GET['admin_id']) ? intval($_GET['admin_id']) : null;
+
+    // Check if `admin_id` is valid and belongs to a user with the 'admin' role
+    if (!$admin_id || !user_can($admin_id, 'create_users')) {
+        return '<p>Registration is only allowed through a valid admin link.</p>';
+    }
 
     // Form processing
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'], $_POST['password'])) {
@@ -99,16 +104,8 @@ function cap_auth_user_register_shortcode() {
         $user = get_user_by('ID', $user_id);
         $user->set_role('user');
 
-        // Attach user to the Master Admin if no admin_id is provided, otherwise attach to specified admin
-        if ($admin_id) {
-            // Link the user to a specific admin
-            update_user_meta($user_id, 'associated_admin', $admin_id);
-        } else {
-            // Link the user to the Master Admin as "Unassigned"
-            $master_admin_id = 1; // Replace this with your Master Admin ID if different
-            update_user_meta($user_id, 'associated_admin', $master_admin_id);
-            update_user_meta($user_id, 'status', 'Unassigned');
-        }
+        // Link the user to the specified admin
+        update_user_meta($user_id, 'associated_admin', $admin_id);
 
         // Log the user in
         wp_set_current_user($user_id);
@@ -135,3 +132,4 @@ function cap_auth_user_register_shortcode() {
     return ob_get_clean();
 }
 add_shortcode('cap_auth_user_register', 'cap_auth_user_register_shortcode');
+
