@@ -14,5 +14,11 @@ if (!defined('ABSPATH')) {
 // Define plugin directory path
 define('AD_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
-// Include necessary files (for moving over code shortly)
-include_once AD_PLUGIN_DIR . 'includes/dashboard.php';
+// Include necessary files
+include_once AD_PLUGIN_DIR . 'includes/class-Dashboard.php';
+
+// Initialize the plugin
+function ad_initialize_admin_dashboard() {
+    Dashboard::init();
+}
+add_action('plugins_loaded', 'ad_initialize_admin_dashboard');

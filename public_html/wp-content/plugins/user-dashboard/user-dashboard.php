@@ -15,4 +15,10 @@ if (!defined('ABSPATH')) {
 define('UD_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
 // Include necessary files
-include_once UD_PLUGIN_DIR . 'includes/dashboard.php';
+include_once UD_PLUGIN_DIR . 'includes/class-UserDashboard.php';
+
+// Initialize the plugin
+function ud_initialize_user_dashboard() {
+    UserDashboard::init();
+}
+add_action('plugins_loaded', 'ud_initialize_user_dashboard');
