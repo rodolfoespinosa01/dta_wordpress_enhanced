@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: User Dashboard Plugin
+Plugin Name: User Dashboard - DTA
 Description: A custom plugin to handle the User dashboard functionalities.
 Version: 1.0
 Author: Rodolfo EN

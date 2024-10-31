@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Admin Dashboard Plugin
+Plugin Name: Admin Dashboard - DTA
 Description: A custom plugin to handle the Admin dashboard functionalities.
 Version: 1.0
 Author: Rodolfo EN

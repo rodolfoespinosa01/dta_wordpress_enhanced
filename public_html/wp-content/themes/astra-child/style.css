@@ -10,3 +10,7 @@
 
 /* Import the parent theme's styles */
 @import url("../astra/style.css");
+
+form label {
+	color:white;
+}
