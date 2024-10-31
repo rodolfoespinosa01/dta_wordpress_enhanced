@@ -10,175 +10,27 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
-// Define plugin directory path
+// Define constants
 define('CAP_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
-// Include additional files
-include_once CAP_PLUGIN_DIR . 'includes/register.php';
-include_once CAP_PLUGIN_DIR . 'includes/login.php';
-
-// Activation Hook: Set up custom roles and flush rewrite rules
-function cap_auth_activate() {
-    cap_auth_create_roles();
-    flush_rewrite_rules(); // Flush rewrite rules if needed
-}
-register_activation_hook(__FILE__, 'cap_auth_activate');
-
-// Deactivation Hook: Remove custom roles
-function cap_auth_deactivate() {
-    cap_auth_remove_roles();
-    flush_rewrite_rules(); // Clean up rewrite rules on deactivation
-}
-register_deactivation_hook(__FILE__, 'cap_auth_deactivate');
-
-// Create custom roles with specific capabilities
-function cap_auth_create_roles() {
-    // Add Master Admin role if it doesn’t exist
-    if (!get_role('master_admin')) {
-        add_role('master_admin', 'Master Admin', [
-            'read' => true,
-            'edit_users' => true,
-            'list_users' => true,
-            'create_users' => true,
-            'delete_users' => true,
-        ]);
-    }
-
-    // Add Admin role if it doesn’t exist
-    if (!get_role('admin')) {
-        add_role('admin', 'Admin', [
-            'read' => true,
-            'create_users' => true,
-            'list_users' => true,
-        ]);
-    }
-
-    // Add User role if it doesn’t exist
-    if (!get_role('user')) {
-        add_role('user', 'User', [
-            'read' => true,
-        ]);
-    }
-}
-
-// Remove custom roles on deactivation
-function cap_auth_remove_roles() {
-    remove_role('master_admin');
-    remove_role('admin');
-    remove_role('user');
-}
-
-function cap_auth_dynamic_menu_items($items, $args) {
-    // Check if this is the 'main' menu location
-    if ($args->theme_location == 'primary') {
-        foreach ($items as $key => $item) {
-            // Get the current user and their role
-            $user = wp_get_current_user();
-            $is_logged_in = is_user_logged_in();
-            $is_admin = in_array('admin', (array) $user->roles);
-            $is_user = in_array('user', (array) $user->roles);
-
-            // Hide Admin Dashboard unless logged in as Admin
-            if ($item->title == 'Admin Dashboard' && (!$is_logged_in || !$is_admin)) {
-                unset($items[$key]);
-            }
-
-            // Hide User Dashboard unless logged in as User
-            if ($item->title == 'User Dashboard' && (!$is_logged_in || !$is_user)) {
-                unset($items[$key]);
-            }
-
-            // Hide User Login and User Registration if any user is logged in
-            if (($item->title == 'User Login' || $item->title == 'User Registration') && $is_logged_in) {
-                unset($items[$key]);
-            }
-
-            // Add a custom "Log Out" link if the user is logged in
-            if ($is_logged_in && $item->title == 'User Registration') {
-                $logout_url = wp_logout_url(home_url()); // Redirect to homepage after logout
-                $logout_item = (object) [
-                    'title' => 'Log Out',
-                    'url' => $logout_url,
-                    'menu_item_parent' => 0,
-                    'ID' => 'logout',
-                    'db_id' => 'logout',
-                    'classes' => ['menu-item', 'menu-item-logout'],
-                ];
-                $items[] = $logout_item; // Add the logout item
-            }
-        }
-    }
-
-    return $items;
-}
-add_filter('wp_nav_menu_objects', 'cap_auth_dynamic_menu_items', 10, 2);
+// Include core classes
+include_once CAP_PLUGIN_DIR . 'includes/class-Login.php';
+include_once CAP_PLUGIN_DIR . 'includes/class-Register.php';
+include_once CAP_PLUGIN_DIR . 'includes/class-Roles.php';
+include_once CAP_PLUGIN_DIR . 'includes/class-Redirects.php';
+include_once CAP_PLUGIN_DIR . 'includes/class-AccessControl.php';
+include_once CAP_PLUGIN_DIR . 'includes/class-Menus.php';
 
 
-function cap_auth_restrict_admin_access() {
-    // Get current user
-    $user = wp_get_current_user();
+// Activation and Deactivation Hooks
+register_activation_hook(__FILE__, ['Roles', 'activate']);
+register_deactivation_hook(__FILE__, ['Roles', 'deactivate']);
 
-    // Check if user has 'admin' role and is accessing wp-admin
-    if (in_array('admin', (array) $user->roles) && is_admin() && !defined('DOING_AJAX')) {
-        wp_redirect(home_url('/admin-dashboard')); // Redirect to custom admin dashboard
-        exit;
-    }
-}
-add_action('admin_init', 'cap_auth_restrict_admin_access');
+// Initialize plugin functionality
+Login::init();
+Register::init();
+Roles::init();
+Redirects::init();
+AccessControl::init();
+Menus::init();
 
-
-// Optional: Redirect users after login based on role
-function cap_auth_redirect_after_login($redirect_to, $request, $user) {
-    // Check if the user is an object and has roles assigned
-    if (is_object($user) && is_array($user->roles)) {
-        if (in_array('master_admin', $user->roles)) {
-            return home_url('/master-admin-dashboard');
-        } elseif (in_array('admin', $user->roles)) {
-            return home_url('/admin-dashboard');
-        } elseif (in_array('user', $user->roles)) {
-            return home_url('/user-dashboard');
-        }
-    }
-    return $redirect_to; // Default redirect if no role matches
-}
-add_filter('login_redirect', 'cap_auth_redirect_after_login', 10, 3);
-
-// Redirect users from the WordPress dashboard if they are not Master Admin (manage_options capability)
-function restrict_dashboard_access() {
-    if (is_admin() && !current_user_can('manage_options') && !wp_doing_ajax()) {
-        wp_redirect(site_url());
-        exit;
-    }
-}
-add_action('admin_init', 'restrict_dashboard_access');
-
-// Redirect users after login based on role
-function custom_login_redirect($redirect_to, $request, $user) {
-    if (isset($user->roles) && is_array($user->roles)) {
-        if (in_array('admin', $user->roles)) {
-            return site_url('/admin-dashboard');
-        } elseif (in_array('user', $user->roles)) {
-            return site_url('/user-dashboard');
-        }
-    }
-    return $redirect_to;
-}
-add_filter('login_redirect', 'custom_login_redirect', 10, 3);
-
-// Unified function to restrict access to role-specific dashboard pages
-function restrict_role_dashboard_access() {
-    global $post;
-    $restricted_pages = [
-        'admin-dashboard' => 'admin', // Only Admins can access /admin-dashboard
-        'user-dashboard'  => 'user'   // Only Users can access /user-dashboard
-    ];
-
-    if (is_page() && isset($restricted_pages[$post->post_name])) {
-        $required_role = $restricted_pages[$post->post_name];
-        if (!current_user_can($required_role)) {
-            wp_redirect(home_url());
-            exit;
-        }
-    }
-}
-add_action('template_redirect', 'restrict_role_dashboard_access');
