@@ -47,14 +47,25 @@ class Menus {
             // Add a "Log Out" link if the user is logged in
             if ($is_logged_in) {
                 $logout_url = wp_logout_url(home_url()); // Redirect to homepage after logout
+
+                // Add all necessary properties for the logout item
                 $logout_item = (object) [
+                    'ID' => 'logout',
+                    'db_id' => 0,
                     'title' => 'Log Out',
                     'url' => $logout_url,
                     'menu_item_parent' => 0,
-                    'ID' => 'logout',
-                    'db_id' => 'logout',
+                    'type' => 'custom',
+                    'object' => 'custom',
+                    'object_id' => 'logout',
                     'classes' => ['menu-item', 'menu-item-logout'],
+                    'target' => '',
+                    'xfn' => '',
+                    'current' => false,
+                    'current_item_ancestor' => false,
+                    'current_item_parent' => false,
                 ];
+                
                 $items[] = $logout_item; // Add the logout item to the menu
             }
         }

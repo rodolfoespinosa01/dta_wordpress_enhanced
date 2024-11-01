@@ -54,7 +54,7 @@ class Register {
             // Assign 'admin' role
             $user = get_user_by('ID', $user_id);
             $user->set_role('admin');
-
+            
             // Log the user in
             wp_set_current_user($user_id);
             wp_set_auth_cookie($user_id);
