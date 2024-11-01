@@ -27,18 +27,42 @@ class Dashboard {
 
         // Dashboard content start
         $content = '<h2>Welcome to the Admin Dashboard</h2><p>Admin-only content here.</p>';
-
-        // Check if macro settings have been initialized for the current admin
         $user_id = get_current_user_id();
+
+        // Check if macro settings have been initialized
         if (!self::macro_settings_initialized($user_id)) {
-            $setup_link = esc_url(add_query_arg('setup_macros', '1')); 
-            $content .= '<p style="color:white;"><a href="' . $setup_link . '">Setup Macro Settings</a></p>';
+            $setup_macro_link = esc_url(add_query_arg('setup_macros', '1'));
+            $content .= '<p><a href="' . $setup_macro_link . '">Setup Macro Settings</a></p>';
         }
 
-        // Check if the setup action was triggered
-        if (isset($_GET['setup_macros']) && $_GET['setup_macros'] === '1') {
+        // Handle Setup Macro Settings
+        if (isset($_GET['setup_macros']) && $_GET['setup_macros'] === '1' && !self::macro_settings_initialized($user_id)) {
             self::insert_default_macro_settings($user_id);
             $content .= '<p>Macro settings have been initialized.</p>';
+        }
+
+        // Check if meal settings have been initialized
+        if (!self::meal_settings_initialized($user_id)) {
+            $setup_meal_link = esc_url(add_query_arg('setup_meal_settings', '1'));
+            $content .= '<p><a href="' . $setup_meal_link . '">Setup Meal Settings</a></p>';
+        }
+
+        // Handle Setup Meal Settings
+        if (isset($_GET['setup_meal_settings']) && $_GET['setup_meal_settings'] === '1' && !self::meal_settings_initialized($user_id)) {
+            self::insert_default_meal_settings($user_id);
+            $content .= '<p>Meal settings have been initialized.</p>';
+        }
+
+        // Check if TDEE multipliers have been initialized
+        if (!self::tdee_multipliers_initialized($user_id)) {
+            $setup_tdee_link = esc_url(add_query_arg('setup_tdee', '1'));
+            $content .= '<p><a href="' . $setup_tdee_link . '">Setup TDEE Multipliers</a></p>';
+        }
+
+        // Handle Setup TDEE Multipliers
+        if (isset($_GET['setup_tdee']) && $_GET['setup_tdee'] === '1' && !self::tdee_multipliers_initialized($user_id)) {
+            self::insert_default_tdee_multipliers($user_id);
+            $content .= '<p>TDEE multipliers have been initialized.</p>';
         }
 
         return $content;
@@ -51,42 +75,108 @@ class Dashboard {
         return $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $table_name WHERE admin_id = %d", $user_id)) > 0;
     }
 
-    // Insert default macro settings for the admin
     private static function insert_default_macro_settings($user_id) {
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'macros_settings';
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'macros_settings';
 
-        $default_values = [
-    // Standard approach
-    ['approach' => 'standard', 'goal' => 'lose_weight', 'variation' => NULL, 'calorie_percentage' => 0.85, 'protein_per_lb' => 1.0, 'carbs_leftover' => 0.6, 'fats_leftover' => 0.4],
-    ['approach' => 'standard', 'goal' => 'maintain_weight', 'variation' => NULL, 'calorie_percentage' => 1.0, 'protein_per_lb' => 0.8, 'carbs_leftover' => 0.5, 'fats_leftover' => 0.5],
-    ['approach' => 'standard', 'goal' => 'gain_weight', 'variation' => NULL, 'calorie_percentage' => 1.2, 'protein_per_lb' => 1.2, 'carbs_leftover' => 0.6, 'fats_leftover' => 0.4],
+    // Load default values from the data file
+    $default_values = include plugin_dir_path(__FILE__) . 'data-default-macro-settings.php';
 
-    // Carb Cycling approach
-    ['approach' => 'carbCycling', 'goal' => 'lose_weight', 'variation' => 'lowCarb', 'calorie_percentage' => 0.85, 'protein_per_lb' => 1.0, 'carbs_leftover' => 0.2, 'fats_leftover' => 0.8],
-    ['approach' => 'carbCycling', 'goal' => 'lose_weight', 'variation' => 'highCarb', 'calorie_percentage' => 0.85, 'protein_per_lb' => 1.0, 'carbs_leftover' => 0.8, 'fats_leftover' => 0.2],
-    ['approach' => 'carbCycling', 'goal' => 'maintain_weight', 'variation' => 'lowCarb', 'calorie_percentage' => 1.0, 'protein_per_lb' => 0.85, 'carbs_leftover' => 0.2, 'fats_leftover' => 0.8],
-    ['approach' => 'carbCycling', 'goal' => 'maintain_weight', 'variation' => 'highCarb', 'calorie_percentage' => 1.0, 'protein_per_lb' => 0.85, 'carbs_leftover' => 0.8, 'fats_leftover' => 0.2],
-    ['approach' => 'carbCycling', 'goal' => 'gain_weight', 'variation' => 'lowCarb', 'calorie_percentage' => 1.2, 'protein_per_lb' => 0.75, 'carbs_leftover' => 0.2, 'fats_leftover' => 0.8],
-    ['approach' => 'carbCycling', 'goal' => 'gain_weight', 'variation' => 'highCarb', 'calorie_percentage' => 1.2, 'protein_per_lb' => 0.75, 'carbs_leftover' => 0.8, 'fats_leftover' => 0.2],
+    foreach ($default_values as $default) {
+        $wpdb->insert($table_name, [
+            'admin_id'          => $user_id,
+            'approach'          => $default['approach'],
+            'goal'              => $default['goal'],
+            'variation'         => $default['variation'],
+            'calorie_percentage'=> $default['calorie_percentage'],
+            'protein_per_lb'    => $default['protein_per_lb'],
+            'carbs_leftover'    => $default['carbs_leftover'],
+            'fats_leftover'     => $default['fats_leftover'],
+        ]);
+    }
+}
+    
+    // Check if meal settings are initialized for the admin
+private static function meal_settings_initialized($user_id) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'meal_settings';
+    return $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $table_name WHERE admin_id = %d", $user_id)) > 0;
+}
 
-    // Keto approach
-    ['approach' => 'keto', 'goal' => 'lose_weight', 'variation' => NULL, 'calorie_percentage' => 0.85, 'protein_per_lb' => 1.0, 'carbs_leftover' => 0.2, 'fats_leftover' => 0.8],
-    ['approach' => 'keto', 'goal' => 'maintain_weight', 'variation' => NULL, 'calorie_percentage' => 1.0, 'protein_per_lb' => 1.0, 'carbs_leftover' => 0.2, 'fats_leftover' => 0.8],
-    ['approach' => 'keto', 'goal' => 'gain_weight', 'variation' => NULL, 'calorie_percentage' => 1.2, 'protein_per_lb' => 1.0, 'carbs_leftover' => 0.2, 'fats_leftover' => 0.8],
-];
+// Insert default meal settings for the admin
+private static function insert_default_meal_settings($user_id) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'meal_settings';
 
-        foreach ($default_values as $default) {
-            $wpdb->insert($table_name, [
-                'admin_id' => $user_id,
-                'approach' => $default['approach'],
-                'goal' => $default['goal'],
-                'variation' => $default['variation'],
-                'calorie_percentage' => $default['calorie_percentage'],
-                'protein_per_lb' => $default['protein_per_lb'],
-                'carbs_leftover' => $default['carbs_leftover'],
-                'fats_leftover' => $default['fats_leftover'],
-            ]);
+    // Include the meal settings data from the data file
+    $meal_settings = include plugin_dir_path(__FILE__) . 'data-default-meal-settings.php';
+
+    foreach ($meal_settings as $approach => $meals_per_day) {
+        foreach ($meals_per_day as $meals => $days) {
+            if (in_array($approach, ['standard', 'keto'])) {
+                foreach ($days as $day_type => $meals_array) {
+                    foreach ($meals_array as $meal_number => $nutrients) {
+                        $wpdb->insert($table_name, [
+                            'admin_id'      => $user_id,
+                            'approach'      => $approach,
+                            'meals_per_day' => $meals,
+                            'carb_type'     => NULL,
+                            'day_type'      => $day_type,
+                            'meal_number'   => $meal_number,
+                            'protein'       => $nutrients['protein'],
+                            'carbs'         => $nutrients['carbs'],
+                            'fats'          => $nutrients['fats'],
+                        ]);
+                    }
+                }
+            } elseif ($approach === 'carbCycling') {
+                foreach ($days as $carb_type => $day_types) {
+                    foreach ($day_types as $day_type => $meals_array) {
+                        foreach ($meals_array as $meal_number => $nutrients) {
+                            $wpdb->insert($table_name, [
+                                'admin_id'      => $user_id,
+                                'approach'      => $approach,
+                                'meals_per_day' => $meals,
+                                'carb_type'     => $carb_type,
+                                'day_type'      => $day_type,
+                                'meal_number'   => $meal_number,
+                                'protein'       => $nutrients['protein'],
+                                'carbs'         => $nutrients['carbs'],
+                                'fats'          => $nutrients['fats'],
+                            ]);
+                        }
+                    }
+                }
+            }
         }
     }
 }
+// Check if TDEE multipliers are initialized for the admin
+    private static function tdee_multipliers_initialized($user_id) {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'tdee_multipliers';
+        return $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $table_name WHERE admin_id = %d", $user_id)) > 0;
+    }
+
+    // Insert default TDEE multipliers for the admin
+    private static function insert_default_tdee_multipliers($user_id) {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'tdee_multipliers';
+
+        // Load default TDEE multipliers from the data file
+        $tdee_multipliers = include plugin_dir_path(__FILE__) . 'data-default-tdee-multipliers.php';
+
+        foreach ($tdee_multipliers as $level => $days) {
+            foreach ($days as $day => $multipliers) {
+                $wpdb->insert($table_name, [
+                    'admin_id'    => $user_id,
+                    'level'       => $level,
+                    'day'         => $day,
+                    'workout_day' => $multipliers['workoutDay'],
+                    'off_day'     => $multipliers['offDay'],
+                ]);
+            }
+        }
+    }
+}
+
