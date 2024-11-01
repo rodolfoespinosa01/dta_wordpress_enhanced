@@ -16,9 +16,12 @@ define('AD_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
 // Include necessary files
 include_once AD_PLUGIN_DIR . 'includes/class-Dashboard.php';
+include_once AD_PLUGIN_DIR . 'includes/edit-macro-settings.php'; // Include the new file
 
 // Initialize the plugin
 function ad_initialize_admin_dashboard() {
     Dashboard::init();
 }
 add_action('plugins_loaded', 'ad_initialize_admin_dashboard');
+add_action('template_redirect', ['Redirects', 'restrict_role_dashboard_access']);
+

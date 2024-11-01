@@ -185,4 +185,3 @@ private static function insert_default_meal_settings($user_id) {
         }
     }
 }
-
