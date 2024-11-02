@@ -20,8 +20,16 @@ include_once AD_PLUGIN_DIR . 'includes/edit-macro-settings.php'; // Include the 
 
 // Initialize the plugin
 function ad_initialize_admin_dashboard() {
+    if (defined('REST_REQUEST') && REST_REQUEST) {
+        error_log('Skipping Dashboard initialization during REST request.');
+        return;
+    }
+
+    error_log('Initializing Dashboard plugin.');
     Dashboard::init();
 }
+
+
 add_action('plugins_loaded', 'ad_initialize_admin_dashboard');
 add_action('template_redirect', ['Redirects', 'restrict_role_dashboard_access']);
 

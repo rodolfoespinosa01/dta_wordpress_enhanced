@@ -20,11 +20,11 @@ class AccessControl {
 
     // Restrict access to WP Admin for non-master_admin roles
     public static function restrict_admin_dashboard_access() {
-        if (is_admin() && !current_user_can('manage_options') && !wp_doing_ajax()) {
-            wp_redirect(home_url()); // Redirect to homepage or another appropriate page
-            exit;
-        }
+    if (is_admin() && !current_user_can('manage_options') && !wp_doing_ajax() && !defined('REST_REQUEST')) {
+        wp_redirect(home_url()); // Redirect to homepage or another appropriate page
+        exit;
     }
+}
 
     // Redirect users after login based on their role
     public static function redirect_after_login($redirect_to, $request, $user) {
@@ -41,22 +41,23 @@ class AccessControl {
     }
 
     // Restrict access to role-specific frontend dashboard pages
-    public static function restrict_role_dashboard_access() {
-        global $post;
+public static function restrict_role_dashboard_access() {
+    global $post;
 
-        // Define role-based page restrictions
-        $restricted_pages = [
-            'admin-dashboard' => 'admin', // Only Admins can access /admin-dashboard
-            'user-dashboard'  => 'user'   // Only Users can access /user-dashboard
-        ];
+    // Define role-based page restrictions
+    $restricted_pages = [
+        'admin-dashboard' => 'admin', // Only Admins can access /admin-dashboard
+        'user-dashboard'  => 'user'   // Only Users can access /user-dashboard
+    ];
 
-        // If the page is restricted by role, check if the user has the required role
-        if (is_page() && isset($restricted_pages[$post->post_name])) {
-            $required_role = $restricted_pages[$post->post_name];
-            if (!current_user_can($required_role)) {
-                wp_redirect(home_url()); // Redirect to homepage or other accessible page
-                exit;
-            }
+    // If the page is restricted by role, check if the user has the required role
+    if (is_page() && isset($restricted_pages[$post->post_name]) && !wp_doing_ajax() && !defined('REST_REQUEST')) {
+        $required_role = $restricted_pages[$post->post_name];
+        if (!current_user_can($required_role)) {
+            wp_redirect(home_url()); // Redirect to homepage or other accessible page
+            exit;
         }
     }
+}
+
 }

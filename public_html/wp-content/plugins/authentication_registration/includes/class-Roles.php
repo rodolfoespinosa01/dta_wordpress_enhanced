@@ -69,12 +69,11 @@ class Roles {
 
     // Restrict Dashboard Access for Non-Master Admins
     public static function restrict_dashboard_access() {
-        // Redirect users who are not 'master_admin' away from WP dashboard
-        if (is_admin() && !current_user_can('manage_options') && !wp_doing_ajax()) {
-            wp_redirect(home_url()); // Redirect to homepage or other page
-            exit;
-        }
+    if (is_admin() && !current_user_can('manage_options') && !wp_doing_ajax() && !defined('REST_REQUEST')) {
+        wp_redirect(home_url()); // Redirect to homepage or other page
+        exit;
     }
+}
 
     // Optional: Utility Method to Check Roles
     public static function user_has_role($user, $role) {

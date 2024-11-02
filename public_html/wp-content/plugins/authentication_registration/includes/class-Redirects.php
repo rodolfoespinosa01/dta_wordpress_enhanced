@@ -34,8 +34,7 @@ class Redirects {
 
     // Restrict access to WP Admin for non-master_admin roles
     public static function restrict_admin_dashboard_access() {
-        // Redirect users who are not 'master_admin' away from WP dashboard
-        if (is_admin() && !current_user_can('manage_options') && !wp_doing_ajax()) {
+        if (is_admin() && !current_user_can('manage_options') && !wp_doing_ajax() && !defined('REST_REQUEST')) {
             wp_redirect(home_url()); // Redirect to homepage or another accessible page
             exit;
         }
@@ -45,14 +44,16 @@ class Redirects {
     public static function restrict_role_dashboard_access() {
         global $post;
 
-        // Define role-based page restrictions
+        if ((defined('REST_REQUEST') && REST_REQUEST) || wp_doing_ajax()) {
+            return; // Skip this function during REST or AJAX requests
+        }
+
         $restricted_pages = [
             'admin-dashboard' => 'admin',       // Only Admins can access /admin-dashboard
             'user-dashboard'  => 'user',        // Only Users can access /user-dashboard
             'master-admin-dashboard' => 'master_admin' // Only Master Admins can access /master-admin-dashboard
         ];
 
-        // If the page is restricted by role, check if the user has the required role
         if (is_page() && isset($restricted_pages[$post->post_name])) {
             $required_role = $restricted_pages[$post->post_name];
             if (!current_user_can($required_role)) {

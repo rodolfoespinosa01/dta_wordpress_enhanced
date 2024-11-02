@@ -24,7 +24,7 @@ class UserDashboard {
             }
         } else {
             // For frontend access, restrict to 'user' role only
-            if (!is_user_logged_in() || !in_array('user', (array) $user->roles)) {
+            if ((!is_user_logged_in() || !in_array('user', (array) $user->roles)) && !(defined('REST_REQUEST') && REST_REQUEST) && !wp_doing_ajax()) {
                 wp_safe_redirect(home_url()); // Redirect unauthorized users
                 exit;
             }
@@ -39,8 +39,12 @@ class UserDashboard {
         if ($status === 'Unassigned' || empty($associated_admin_id)) {
             $dashboard_message = "<p>You are currently unassigned to any specific admin. Please contact support for further assistance.</p>";
         } else {
-            $admin_user = get_user_by('ID', $associated_admin_id);
-            $admin_name = $admin_user ? esc_html($admin_user->display_name) : 'Your Admin';
+            if (!empty($associated_admin_id)) {
+                $admin_user = get_user_by('ID', $associated_admin_id);
+                $admin_name = $admin_user ? esc_html($admin_user->display_name) : 'Your Admin';
+            } else {
+                $admin_name = 'Your Admin';
+            }
             $dashboard_message = "<p>Welcome to your dashboard! You are currently associated with admin: <strong>$admin_name</strong>.</p>";
         }
 

@@ -63,14 +63,19 @@ class EditMacroSettings {
 
 
     // Handle AJAX request to save macro settings
-    public static function save_macro_settings() {
+public static function save_macro_settings() {
     check_ajax_referer('macro_settings_nonce', 'nonce');
 
     // Verify the user is an admin
     $user_id = get_current_user_id();
     if (!self::is_admin_user($user_id)) {
         wp_send_json_error(['message' => 'Unauthorized']);
-        return;
+        exit;
+    }
+
+    if (empty($_POST['settings'])) {
+        wp_send_json_error(['message' => 'No settings data provided']);
+        exit;
     }
 
     parse_str($_POST['settings'], $settings);
@@ -79,7 +84,7 @@ class EditMacroSettings {
 
     foreach ($settings['calorie_percentage'] as $id => $calorie_percentage) {
         // Ensure each update targets only records owned by the logged-in admin
-        $wpdb->update(
+        $result = $wpdb->update(
             $table_name,
             [
                 'calorie_percentage' => $calorie_percentage,
@@ -94,10 +99,18 @@ class EditMacroSettings {
             ['%f', '%f', '%f', '%f'],
             ['%d', '%d']
         );
+
+        if ($result === false) {
+            error_log('Failed to update record ID ' . $id . ': ' . $wpdb->last_error);
+            wp_send_json_error(['message' => 'Failed to save settings for one or more records']);
+            exit;
+        }
     }
 
     wp_send_json_success(['message' => 'Settings saved successfully']);
+    exit;
 }
+
 
 // Add helper function to check if user is admin
 private static function is_admin_user($user_id) {

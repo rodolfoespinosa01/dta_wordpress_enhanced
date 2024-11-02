@@ -13,6 +13,11 @@ class Menus {
 
     // Modify menu items based on user roles and login status
     public static function dynamic_menu_items($items, $args) {
+        // Skip modification during AJAX or REST requests
+        if ((defined('REST_REQUEST') && REST_REQUEST) || wp_doing_ajax()) {
+            return $items;
+        }
+
         // Only modify the primary menu; adjust as needed if you have other menus
         if ($args->theme_location == 'primary') {
             // Get the current user and their roles

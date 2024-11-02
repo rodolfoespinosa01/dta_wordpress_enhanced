@@ -68,15 +68,15 @@ class Register {
         ob_start();
         ?>
         <form method="POST">
-            <?php wp_nonce_field('cap_register_action', 'cap_register_nonce'); ?>
-            <label for="email">Email:</label>
-            <input type="email" name="email" required>
-            <br>
-            <label for="password">Password:</label>
-            <input type="password" name="password" required>
-            <br>
-            <button type="submit">Register</button>
-        </form>
+    <?php wp_nonce_field('cap_register_action', 'cap_register_nonce'); ?>
+    <label for="email_field">Email:</label>
+    <input type="email" id="email_field" name="email" required>
+    <br>
+    <label for="password_field">Password:</label>
+    <input type="password" id="password_field" name="password" required>
+    <br>
+    <button type="submit">Register</button>
+</form>
         <?php
         return ob_get_clean();
     }
