@@ -17,7 +17,6 @@ class UserInfoTable {
             id MEDIUMINT(9) NOT NULL AUTO_INCREMENT,
             user_id BIGINT(20) UNSIGNED NOT NULL,
             admin_id BIGINT(20) UNSIGNED NOT NULL,
-            password VARCHAR(255) NOT NULL,
             age INT(3) NOT NULL,
             gender VARCHAR(10) NOT NULL,
             weight_kg DECIMAL(10,6) NOT NULL,
