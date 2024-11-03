@@ -16,7 +16,9 @@ define('AD_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
 // Include necessary files
 include_once AD_PLUGIN_DIR . 'includes/class-Dashboard.php';
-include_once AD_PLUGIN_DIR . 'includes/edit-macro-settings.php'; // Include the new file
+include_once AD_PLUGIN_DIR . 'includes/edit-macro-settings.php'; 
+include_once AD_PLUGIN_DIR . 'includes/edit-meal-settings.php'; 
+
 
 // Initialize the plugin
 function ad_initialize_admin_dashboard() {
