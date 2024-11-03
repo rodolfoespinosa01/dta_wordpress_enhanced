@@ -18,6 +18,8 @@ define('AD_PLUGIN_DIR', plugin_dir_path(__FILE__));
 include_once AD_PLUGIN_DIR . 'includes/class-Dashboard.php';
 include_once AD_PLUGIN_DIR . 'includes/edit-macro-settings.php'; 
 include_once AD_PLUGIN_DIR . 'includes/edit-meal-settings.php'; 
+include_once AD_PLUGIN_DIR . 'includes/edit-tdee-multipliers.php'; 
+
 
 
 // Initialize the plugin
