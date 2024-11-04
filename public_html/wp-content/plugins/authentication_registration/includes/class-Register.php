@@ -1,4 +1,5 @@
 <?php
+require_once plugin_dir_path(__FILE__) . 'calculations.php';
 // Prevent direct access
 if (!defined('ABSPATH')) {
     exit;
@@ -108,30 +109,36 @@ class Register {
         $gender = sanitize_text_field($_POST['gender']);
         $activity_level = sanitize_text_field($_POST['activity_level']);
         $goal = sanitize_text_field($_POST['goal']);
+        $meal_plan_type = sanitize_text_field($_POST['meal_plan_type']);
         $weight = floatval($_POST['weight']);
         $weight_unit = sanitize_text_field($_POST['weight_unit']);
-        $height_unit = sanitize_text_field($_POST['height_unit']);
-        $meal_plan_type = sanitize_text_field($_POST['meal_plan_type']);
 
         // Convert weight to kg if needed
         $weight_kg = ($weight_unit === 'lbs') ? $weight * 0.453592 : $weight;
         $weight_lbs = ($weight_unit === 'kg') ? $weight * 2.20462 : $weight;
 
-        // Convert height based on the selected unit
+           // Height conversion logic
+        $height_unit = sanitize_text_field($_POST['height_unit']);
         if ($height_unit === 'imperial') {
-            $height_ft = intval($_POST['height_ft']);
-            $height_in = floatval($_POST['height_in']);
-            $height_cm = ($height_ft * 30.48) + ($height_in * 2.54);
+            // Default to 5 feet and 0 inches if not explicitly set
+            $height_ft = isset($_POST['height_ft']) ? intval($_POST['height_ft']) : 5;
+            $height_in = isset($_POST['height_in']) ? floatval($_POST['height_in']) : 0;
+            $height_cm = ($height_ft * 30.48) + ($height_in * 2.54);  // Convert feet/inches to cm
+            $height_ft_in = ($height_ft * 12) + $height_in;  // Convert total feet/inches to inches
         } else {
-            $height_cm = floatval($_POST['height_cm']);
+            // Initialize the metric height value
+            $height_cm = isset($_POST['height_cm']) ? floatval($_POST['height_cm']) : 0;
+            $height_ft_in = $height_cm / 2.54;  // Convert cm to inches
+            $height_ft = 0; // Set $height_ft and $height_in to default values for clarity
+            $height_in = 0;
         }
+        
+        // Define default training time
+        $default_training_time = isset($_POST['default_training_time']) ? sanitize_text_field($_POST['default_training_time']) : 'none';
         
         // Initialize meal data array
         $meal_data = [];
         $days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-        
-        // Define default training time
-        $default_training_time = isset($_POST['default_training_time']) ? sanitize_text_field($_POST['default_training_time']) : 'none';
         
         // Capture the meal plan and training schedule for each day
         foreach ($days as $day) {
@@ -145,6 +152,8 @@ class Register {
                 'training_time' => $training_time
             ];
         }
+        
+        $training_days_per_week = calculate_training_days($meal_data);
         
         // Convert meal_data to JSON format for database storage
         $meal_data_json = json_encode($meal_data);
@@ -179,7 +188,8 @@ class Register {
                 'activity_level' => $activity_level,
                 'goal' => $goal,
                 'meal_plan_type' => $meal_plan_type,
-                'meal_data' => $meal_data_json // Store as JSON
+                'meal_data' => $meal_data_json, // Store as JSON
+                'training_days_per_week' => $training_days_per_week
             )
         );
 

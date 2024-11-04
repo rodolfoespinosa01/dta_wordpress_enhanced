@@ -27,13 +27,13 @@ class UserInfoTable {
         goal VARCHAR(20) NOT NULL,
         meal_plan_type VARCHAR(20) NOT NULL DEFAULT 'standard',
         meal_data JSON NOT NULL,
-        carbCycling_data JSON DEFAULT NULL,       -- Changed to DEFAULT NULL
-        training_days_per_week INT(1) DEFAULT NULL, -- Changed to DEFAULT NULL
+        training_days_per_week INT(1),
         bmr DECIMAL(10,6) DEFAULT NULL,           -- Changed to DEFAULT NULL
         workout_day_tdee DECIMAL(10,6) DEFAULT NULL, -- Changed to DEFAULT NULL
         off_day_tdee DECIMAL(10,6) DEFAULT NULL,  -- Changed to DEFAULT NULL
         calories_workoutDay DECIMAL(10,6) DEFAULT NULL, -- Changed to DEFAULT NULL
         calories_offDay DECIMAL(10,6) DEFAULT NULL, -- Changed to DEFAULT NULL
+        carbCycling_data JSON,       -- Changed to DEFAULT NULL
     
         -- Protein intake for standard and keto
         protein_intake DECIMAL(10,6) DEFAULT NULL, -- Changed to DEFAULT NULL
