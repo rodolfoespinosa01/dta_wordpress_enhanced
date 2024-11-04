@@ -156,6 +156,13 @@ class Register {
         $training_days_per_week = calculate_training_days($meal_data);
         // Calculate BMR
         $bmr = calculate_bmr($gender, $weight_kg, $height_cm, $age);
+        
+        // Assuming $admin_id, $activity_level, and $training_days_per_week are already defined
+        $tdee_values = fetch_tdee_multipliers($admin_id, $activity_level, $training_days_per_week);
+        
+        $workout_day_tdee = $tdee_values['workout_day_tdee'];
+        $off_day_tdee = $tdee_values['off_day_tdee'];
+
 
         
         // Convert meal_data to JSON format for database storage
@@ -193,7 +200,9 @@ class Register {
                 'meal_plan_type' => $meal_plan_type,
                 'meal_data' => $meal_data_json, // Store as JSON
                 'training_days_per_week' => $training_days_per_week,
-                'bmr' => number_format((float)$bmr, 6, '.', '')
+                'bmr' => number_format((float)$bmr, 6, '.', ''),
+                'workout_day_tdee' => number_format((float)$workout_day_tdee, 6, '.', ''),
+                'off_day_tdee' => number_format((float)$off_day_tdee, 6, '.', '')
             )
         );
 

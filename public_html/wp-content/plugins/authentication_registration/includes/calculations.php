@@ -25,5 +25,37 @@ function calculate_bmr($gender, $weight_kg, $height_cm, $age) {
     }
 }
 
+function fetch_tdee_multipliers($admin_id, $activity_level, $training_days_per_week) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'tdee_multipliers';
+
+    // Query to retrieve the TDEE multipliers for the specified admin, activity level, and training days
+    $result = $wpdb->get_row(
+        $wpdb->prepare(
+            "SELECT workout_day, off_day 
+             FROM $table_name 
+             WHERE admin_id = %d AND level = %s AND day = %d",
+            $admin_id,
+            $activity_level,
+            $training_days_per_week
+        ),
+        ARRAY_A
+    );
+
+    // Return the values, or defaults if not found
+    if ($result) {
+        return [
+            'workout_day_tdee' => (float) $result['workout_day'],
+            'off_day_tdee' => (float) $result['off_day']
+        ];
+    } else {
+        return [
+            'workout_day_tdee' => 0,
+            'off_day_tdee' => 0
+        ];
+    }
+}
+
+
 
 
