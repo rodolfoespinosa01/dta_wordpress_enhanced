@@ -163,10 +163,57 @@ class Register {
         $workout_day_tdee = $tdee_values['workout_day_tdee'];
         $off_day_tdee = $tdee_values['off_day_tdee'];
 
-
-        
         // Convert meal_data to JSON format for database storage
         $meal_data_json = json_encode($meal_data);
+        
+        // Check if the meal plan is 'carbCycling'
+        if ($meal_plan_type === 'carbCycling') {
+            // Process carb cycling data
+            $carb_cycle_template = sanitize_text_field($_POST['carb_cycle_template']);
+            $carbCycling_data = [];
+        
+            if ($carb_cycle_template === 'custom') {
+                // Custom carb cycling schedule selected, save custom days
+                $days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+                foreach ($days as $day) {
+                    $carbCycling_data[$day] = sanitize_text_field($_POST["carbCycling_schedule"][$day]);
+                }
+            } else {
+                // Predefined template, map to carb cycling data using 'highCarb' and 'lowCarb'
+                switch ($carb_cycle_template) {
+                    case 'option1':
+                        $carbCycling_data = [
+                            'sunday' => 'lowCarb', 'monday' => 'lowCarb', 'tuesday' => 'highCarb',
+                            'wednesday' => 'lowCarb', 'thursday' => 'highCarb', 'friday' => 'lowCarb', 'saturday' => 'highCarb'
+                        ];
+                        break;
+                    case 'option2':
+                        $carbCycling_data = [
+                            'sunday' => 'highCarb', 'monday' => 'highCarb', 'tuesday' => 'lowCarb',
+                            'wednesday' => 'lowCarb', 'thursday' => 'highCarb', 'friday' => 'lowCarb', 'saturday' => 'highCarb'
+                        ];
+                        break;
+                    case 'option3':
+                        $carbCycling_data = [
+                            'sunday' => 'highCarb', 'monday' => 'lowCarb', 'tuesday' => 'lowCarb',
+                            'wednesday' => 'lowCarb', 'thursday' => 'lowCarb', 'friday' => 'highCarb', 'saturday' => 'highCarb'
+                        ];
+                        break;
+                    case 'option4':
+                        $carbCycling_data = [
+                            'sunday' => 'highCarb', 'monday' => 'lowCarb', 'tuesday' => 'highCarb',
+                            'wednesday' => 'lowCarb', 'thursday' => 'highCarb', 'friday' => 'lowCarb', 'saturday' => 'highCarb'
+                        ];
+                        break;
+                }
+            }
+        } else {
+            // Not carb cycling, set carb cycling data as NULL
+            $carbCycling_data = null;
+        }
+        
+        // Encode carbCycling_data into JSON format for storage
+        $carbCycling_data_json = json_encode($carbCycling_data);
 
 
         // Register new User
@@ -184,8 +231,10 @@ class Register {
         global $wpdb;
         $table_name = $wpdb->prefix . 'user_info';
 
+        if ($meal_plan_type === 'carbCycling') {
+    // For carb cycling, set standard fields to NULL and insert high/low carb values
         $result = $wpdb->insert(
-            $table_name,
+        $table_name,
             array(
                 'user_id' => $user_id,
                 'admin_id' => $admin_id,
@@ -202,9 +251,34 @@ class Register {
                 'training_days_per_week' => $training_days_per_week,
                 'bmr' => number_format((float)$bmr, 6, '.', ''),
                 'workout_day_tdee' => number_format((float)$workout_day_tdee, 6, '.', ''),
-                'off_day_tdee' => number_format((float)$off_day_tdee, 6, '.', '')
+                'off_day_tdee' => number_format((float)$off_day_tdee, 6, '.', ''),
+                'carbCycling_data' => $carbCycling_data_json
             )
         );
+        } else {
+            $result = $wpdb->insert(
+        $table_name,
+            array(
+                'user_id' => $user_id,
+                'admin_id' => $admin_id,
+                'age' => $age,
+                'gender' => $gender,
+                'weight_kg' => $weight_kg,
+                'weight_lbs' => $weight_lbs,
+                'height_cm' => $height_cm,
+                'height_ft_in' => $height_ft_in,
+                'activity_level' => $activity_level,
+                'goal' => $goal,
+                'meal_plan_type' => $meal_plan_type,
+                'meal_data' => $meal_data_json, // Store as JSON
+                'training_days_per_week' => $training_days_per_week,
+                'bmr' => number_format((float)$bmr, 6, '.', ''),
+                'workout_day_tdee' => number_format((float)$workout_day_tdee, 6, '.', ''),
+                'off_day_tdee' => number_format((float)$off_day_tdee, 6, '.', ''),
+                'carbCycling_data' => null
+            )
+        );
+        }
 
 
         if ($result === false) {
