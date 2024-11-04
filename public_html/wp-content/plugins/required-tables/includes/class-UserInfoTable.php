@@ -17,6 +17,8 @@ class UserInfoTable {
             id MEDIUMINT(9) NOT NULL AUTO_INCREMENT,
             user_id BIGINT(20) UNSIGNED NOT NULL,
             admin_id BIGINT(20) UNSIGNED NOT NULL,
+            email VARCHAR(100) NOT NULL,      -- Added email field
+            password VARCHAR(255) NOT NULL,   -- Added password field
             age INT(3) NOT NULL,
             gender VARCHAR(10) NOT NULL,
             weight_kg DECIMAL(10,6) NOT NULL,
@@ -64,3 +66,4 @@ class UserInfoTable {
         dbDelta($sql);
     }
 }
+

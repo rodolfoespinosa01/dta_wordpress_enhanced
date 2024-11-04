@@ -21,7 +21,6 @@ include_once CAP_PLUGIN_DIR . 'includes/class-Redirects.php';
 include_once CAP_PLUGIN_DIR . 'includes/class-AccessControl.php';
 include_once CAP_PLUGIN_DIR . 'includes/class-Menus.php';
 
-
 // Activation and Deactivation Hooks
 register_activation_hook(__FILE__, ['Roles', 'activate']);
 register_deactivation_hook(__FILE__, ['Roles', 'deactivate']);

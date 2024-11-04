@@ -19,6 +19,8 @@ include_once AD_PLUGIN_DIR . 'includes/class-Dashboard.php';
 include_once AD_PLUGIN_DIR . 'includes/edit-macro-settings.php'; 
 include_once AD_PLUGIN_DIR . 'includes/edit-meal-settings.php'; 
 include_once AD_PLUGIN_DIR . 'includes/edit-tdee-multipliers.php'; 
+include_once AD_PLUGIN_DIR . 'includes/list-clients.php';
+
 
 
 
