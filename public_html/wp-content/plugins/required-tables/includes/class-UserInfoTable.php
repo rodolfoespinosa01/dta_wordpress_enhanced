@@ -28,31 +28,31 @@ class UserInfoTable {
         meal_plan_type VARCHAR(20) NOT NULL DEFAULT 'standard',
         meal_data JSON NOT NULL,
         training_days_per_week INT(1),
-        bmr DECIMAL(10,6) DEFAULT NULL,           -- Changed to DEFAULT NULL
-        workout_day_tdee DECIMAL(10,6) DEFAULT NULL, -- Changed to DEFAULT NULL
-        off_day_tdee DECIMAL(10,6) DEFAULT NULL,  -- Changed to DEFAULT NULL
-        calories_workoutDay DECIMAL(10,6) DEFAULT NULL, -- Changed to DEFAULT NULL
-        calories_offDay DECIMAL(10,6) DEFAULT NULL, -- Changed to DEFAULT NULL
-        carbCycling_data JSON,       -- Changed to DEFAULT NULL
+        bmr DECIMAL(10,6),
+        workout_day_tdee DECIMAL(10,6),
+        off_day_tdee DECIMAL(10,6),
+        calories_workoutDay DECIMAL(10,6),
+        calories_offDay DECIMAL(10,6),
+        carbCycling_data JSON,
     
         -- Protein intake for standard and keto
-        protein_intake DECIMAL(10,6) DEFAULT NULL, -- Changed to DEFAULT NULL
-        workout_carbs DECIMAL(10,6) DEFAULT NULL,  -- Changed to DEFAULT NULL
-        workout_fats DECIMAL(10,6) DEFAULT NULL,   -- Changed to DEFAULT NULL
-        off_day_carbs DECIMAL(10,6) DEFAULT NULL,  -- Changed to DEFAULT NULL
-        off_day_fats DECIMAL(10,6) DEFAULT NULL,   -- Changed to DEFAULT NULL
+        protein_intake DECIMAL(10,6),
+        workout_carbs DECIMAL(10,6),
+        workout_fats DECIMAL(10,6),
+        off_day_carbs DECIMAL(10,6),
+        off_day_fats DECIMAL(10,6),
     
-        -- Separate fields for carb cycling protein intake
-        protein_intake_highCarb DECIMAL(10,6) DEFAULT NULL, -- Changed to DEFAULT NULL
-        protein_intake_lowCarb DECIMAL(10,6) DEFAULT NULL,  -- Changed to DEFAULT NULL
-        workout_carbs_lowCarb DECIMAL(10,6) DEFAULT NULL,   -- Changed to DEFAULT NULL
-        workout_carbs_highCarb DECIMAL(10,6) DEFAULT NULL,  -- Changed to DEFAULT NULL
-        workout_fats_lowCarb DECIMAL(10,6) DEFAULT NULL,    -- Changed to DEFAULT NULL
-        workout_fats_highCarb DECIMAL(10,6) DEFAULT NULL,   -- Changed to DEFAULT NULL
-        off_day_carbs_lowCarb DECIMAL(10,6) DEFAULT NULL,   -- Changed to DEFAULT NULL
-        off_day_carbs_highCarb DECIMAL(10,6) DEFAULT NULL,  -- Changed to DEFAULT NULL
-        off_day_fats_lowCarb DECIMAL(10,6) DEFAULT NULL,    -- Changed to DEFAULT NULL
-        off_day_fats_highCarb DECIMAL(10,6) DEFAULT NULL,   -- Changed to DEFAULT NULL
+    -- Separate fields for carb cycling protein intake
+        protein_intake_highCarb DECIMAL(10,6),
+        protein_intake_lowCarb DECIMAL(10,6),
+        workout_carbs_lowCarb DECIMAL(10,6),
+        workout_carbs_highCarb DECIMAL(10,6),
+        workout_fats_lowCarb DECIMAL(10,6),
+        workout_fats_highCarb DECIMAL(10,6),
+        off_day_carbs_lowCarb DECIMAL(10,6),
+        off_day_carbs_highCarb DECIMAL(10,6),
+        off_day_fats_lowCarb DECIMAL(10,6),
+        off_day_fats_highCarb DECIMAL(10,6),
     
         PRIMARY KEY (id),
         FOREIGN KEY (user_id) REFERENCES {$wpdb->prefix}users(ID) ON DELETE CASCADE,

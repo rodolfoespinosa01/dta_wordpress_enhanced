@@ -11,3 +11,19 @@ function calculate_training_days($meal_data) {
 
     return $training_days;
 }
+
+function calculate_bmr($gender, $weight_kg, $height_cm, $age) {
+    if ($gender === 'male') {
+        // BMR formula for men
+        return (10 * $weight_kg) + (6.25 * $height_cm) - (5 * $age) + 5;
+    } elseif ($gender === 'female') {
+        // BMR formula for women
+        return (10 * $weight_kg) + (6.25 * $height_cm) - (5 * $age) - 160;
+    } else {
+        // Default to 0 if gender is not recognized
+        return 0;
+    }
+}
+
+
+

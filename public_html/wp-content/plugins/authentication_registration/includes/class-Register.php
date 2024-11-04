@@ -154,6 +154,9 @@ class Register {
         }
         
         $training_days_per_week = calculate_training_days($meal_data);
+        // Calculate BMR
+        $bmr = calculate_bmr($gender, $weight_kg, $height_cm, $age);
+
         
         // Convert meal_data to JSON format for database storage
         $meal_data_json = json_encode($meal_data);
@@ -189,7 +192,8 @@ class Register {
                 'goal' => $goal,
                 'meal_plan_type' => $meal_plan_type,
                 'meal_data' => $meal_data_json, // Store as JSON
-                'training_days_per_week' => $training_days_per_week
+                'training_days_per_week' => $training_days_per_week,
+                'bmr' => number_format((float)$bmr, 6, '.', '')
             )
         );
 
