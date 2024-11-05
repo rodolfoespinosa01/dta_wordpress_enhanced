@@ -392,8 +392,8 @@ class Register {
                     <?php foreach (['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'] as $day) : ?>
                         <label for="<?php echo $day; ?>_carb_type"><?php echo ucfirst($day); ?>:</label><br>
                         <select id="<?php echo $day; ?>_carb_type" name="carbCycling_schedule[<?php echo $day; ?>]">
-                            <option value="high">High Carb</option>
-                            <option value="low">Low Carb</option>
+                            <option value="highCarb">High Carb</option>
+                            <option value="lowCarb">Low Carb</option>
                         </select><br><br>
                     <?php endforeach; ?>
                 </div>
