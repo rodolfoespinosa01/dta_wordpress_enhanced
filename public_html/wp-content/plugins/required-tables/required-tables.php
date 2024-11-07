@@ -22,10 +22,17 @@ include_once RT_PLUGIN_DIR . 'includes/class-UserInfoTable.php'; // Updated path
 
 // Activation hook to create tables
 function rt_activate_required_tables() {
-    MacroSettingsTable::create_table();
-    MealSettingsTable::create_table();
-    TdeeMultiplierTable::create_table();
-    UserInfoTable::create_table();
+    try {
+        MacroSettingsTable::create_table();
+        MealSettingsTable::create_table();
+        TdeeMultiplierTable::create_table();
+        UserInfoTable::create_table();
+        error_log("Plugin activation successful.");
+    } catch (Exception $e) {
+        error_log("Plugin activation failed: " . $e->getMessage());
+        throw $e; // Re-throw to ensure the issue is caught
+    }
 }
+
 
 register_activation_hook(__FILE__, 'rt_activate_required_tables');
