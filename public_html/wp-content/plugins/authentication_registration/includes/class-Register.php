@@ -253,11 +253,18 @@ class Register {
         
          // Assume $weight_lbs, $meal_plan_type, $goal, $admin_id, $calories_workoutDay, and $calories_offDay are already defined
 
+// First, calculate protein intake based on meal plan type
 if ($meal_plan_type === 'carbCycling') {
     // Calculate protein intake for high-carb and low-carb days
     $protein_intake_highCarb = calculate_protein($weight_lbs, $meal_plan_type, $goal, $admin_id, 'highCarb');
     $protein_intake_lowCarb = calculate_protein($weight_lbs, $meal_plan_type, $goal, $admin_id, 'lowCarb');
+} else {
+    // For standard and keto plans
+    $protein_intake = calculate_protein($weight_lbs, $meal_plan_type, $goal, $admin_id);
+}
 
+// Now, calculate carbs and fats
+if ($meal_plan_type === 'carbCycling') {
     // High-Carb Day for Workout
     $workout_macros_highCarb = calculate_carbs_fats($calories_workoutDay, $protein_intake_highCarb, $meal_plan_type, $goal, $admin_id, 'highCarb');
     $workout_carbs_highCarb = $workout_macros_highCarb['carbs_grams'];
@@ -279,8 +286,6 @@ if ($meal_plan_type === 'carbCycling') {
     $off_day_fats_lowCarb = $off_day_macros_lowCarb['fats_grams'];
 } else {
     // For standard and keto plans
-    $protein_intake = calculate_protein($weight_lbs, $meal_plan_type, $goal, $admin_id);
-
     // Workout Day Macros
     $workout_macros = calculate_carbs_fats($calories_workoutDay, $protein_intake, $meal_plan_type, $goal, $admin_id);
     $workout_carbs_grams = $workout_macros['carbs_grams'];
@@ -291,6 +296,7 @@ if ($meal_plan_type === 'carbCycling') {
     $off_day_carbs_grams = $off_day_macros['carbs_grams'];
     $off_day_fats_grams = $off_day_macros['fats_grams'];
 }
+
 
 
         // Insert additional user info into wp_user_info
@@ -383,7 +389,7 @@ if ($meal_plan_type === 'carbCycling') {
             
              // Set carb cycling fields to NULL
             'protein_intake_highCarb' => null,
-            'protein_intake_lowCarb' => null,
+            'protein_intake_lowCarb' => null
         )
     );
 }
