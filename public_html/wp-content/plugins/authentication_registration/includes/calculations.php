@@ -1,4 +1,13 @@
 <?php
+
+function calculate_age($birth_date) {
+    $birthDate = new DateTime($birth_date);
+    $today = new DateTime("today");
+    $age = $birthDate->diff($today)->y; // Calculate the age in years
+    return $age;
+}
+
+
 function calculate_training_days($meal_data) {
     $training_days = 0;
 

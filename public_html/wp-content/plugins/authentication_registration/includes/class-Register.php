@@ -32,6 +32,12 @@ class Register {
             if (!isset($_POST['cap_register_nonce']) || !wp_verify_nonce($_POST['cap_register_nonce'], 'cap_register_action')) {
                 return '<p>Nonce verification failed. Please try again.</p>';
             }
+            
+            $birth_date = get_user_meta($user_id, 'birth_date', true);
+
+            if ($birth_date) {
+                $age = Register::calculate_age($birth_date);
+            }
 
             $email = sanitize_email($_POST['email']);
             $password = sanitize_text_field($_POST['password']);
@@ -69,15 +75,15 @@ class Register {
         ob_start();
         ?>
         <form method="POST">
-    <?php wp_nonce_field('cap_register_action', 'cap_register_nonce'); ?>
-    <label for="email_field">Email:</label>
-    <input type="email" id="email_field" name="email" required>
-    <br>
-    <label for="password_field">Password:</label>
-    <input type="password" id="password_field" name="password" required>
-    <br>
-    <button type="submit">Register</button>
-</form>
+            <?php wp_nonce_field('cap_register_action', 'cap_register_nonce'); ?>
+            <label for="email_field">Email:</label>
+            <input type="email" id="email_field" name="email" required>
+            <br>
+            <label for="password_field">Password:</label>
+            <input type="password" id="password_field" name="password" required>
+            <br>
+            <button type="submit">Register</button>
+        </form>
         <?php
         return ob_get_clean();
     }
@@ -85,15 +91,15 @@ class Register {
     // User registration form shortcode handler
     public static function user_register_form() {
     // Check if user is already logged in
-    if (is_user_logged_in()) {
+        if (is_user_logged_in()) {
         return '<p>You are already registered and logged in.</p>';
-    }
+        }
 
     // Check for a valid `admin_id` in the URL
     $admin_id = isset($_GET['admin_id']) ? intval($_GET['admin_id']) : null;
-    if (!$admin_id || !user_can($admin_id, 'create_users')) {
+        if (!$admin_id || !user_can($admin_id, 'create_users')) {
         return '<p>Registration is only allowed through a valid admin link.</p>';
-    }
+        }
 
     // Form processing
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'], $_POST['password'])) {
@@ -105,7 +111,20 @@ class Register {
         // Capture form data
         $email = sanitize_email($_POST['email']);
         $password = sanitize_text_field($_POST['password']);
-        $age = intval($_POST['age']);
+        $birth_date = sanitize_text_field($_POST['birth_date']); // New birth date field
+
+        // Validate birth date
+        if (!$birth_date || !strtotime($birth_date)) {
+            return '<p>Invalid birth date. Please select a valid date.</p>';
+        }
+
+        // Calculate the user's age
+        $age = self::calculate_age($birth_date);
+        if ($age < 18) { // Check if the user is under 18
+            return '<p>You must be at least 18 years old to register.</p>';
+        }
+
+        // Additional form data
         $gender = sanitize_text_field($_POST['gender']);
         $activity_level = sanitize_text_field($_POST['activity_level']);
         $goal = sanitize_text_field($_POST['goal']);
@@ -279,8 +298,7 @@ class Register {
             )
         );
         }
-
-
+        
         if ($result === false) {
             echo '<p>Error: Could not save the data. Please try again.</p>';
             return;
@@ -294,9 +312,12 @@ class Register {
         wp_safe_redirect(site_url('/user-dashboard'));
         exit;
     }
-
+    
+    
+ 
     // Display the registration form with a nonce
     ob_start();
+    
     ?>
         <form method="post">
         <?php wp_nonce_field('cap_register_action', 'cap_register_nonce'); ?>
@@ -308,9 +329,10 @@ class Register {
             <label for="password">Password:</label><br>
             <input type="password" id="password" name="password" required><br><br>
         
-            <!-- Age -->
-            <label for="age">Age:</label><br>
-            <input type="number" id="age" name="age" required><br><br>
+                      <!-- Birth Date -->
+            <label for="birth_date">Birth Date:</label><br>
+            <input type="date" id="birth_date" name="birth_date" required><br><br>
+
         
             <!-- Gender -->
             <label for="gender">Gender:</label><br>
@@ -489,5 +511,12 @@ function applyDefaultTrainingTime(value) {
 </script>
         <?php
         return ob_get_clean();
+    }
+    
+    // Helper method to calculate age
+    private static function calculate_age($birth_date) {
+        $birthDate = new DateTime($birth_date);
+        $today = new DateTime("today");
+        return $birthDate->diff($today)->y;
     }
 }
