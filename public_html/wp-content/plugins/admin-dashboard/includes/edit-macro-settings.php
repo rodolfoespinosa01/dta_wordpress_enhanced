@@ -65,7 +65,7 @@ class EditMacroSettings {
     }
 
     // Retrieve macro settings from the database
-    private static function get_macro_settings($user_id) {
+    public static function get_macro_settings($user_id) {
         global $wpdb;
         $table_name = $wpdb->prefix . 'macros_settings';
 

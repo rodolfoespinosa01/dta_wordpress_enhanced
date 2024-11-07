@@ -65,6 +65,57 @@ function fetch_tdee_multipliers($admin_id, $activity_level, $training_days_per_w
     }
 }
 
+function fetch_admin_macro_settings($admin_id, $goal, $meal_plan_type, $carb_day_type = null) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'macros_settings'; // Replace with your actual table name
+
+    // Base query for macro settings
+    $query = "SELECT calorie_percentage, protein_per_lb, carbs_leftover, fats_leftover 
+              FROM $table_name 
+              WHERE admin_id = %d AND goal = %s AND approach = %s";
+
+    // Add variation filter if the meal plan type is 'carbCycling'
+    if ($meal_plan_type === 'carbCycling' && $carb_day_type) {
+        $query .= " AND variation = %s";
+        $result = $wpdb->get_row($wpdb->prepare($query, $admin_id, $goal, $meal_plan_type, $carb_day_type), ARRAY_A);
+    } else {
+        $result = $wpdb->get_row($wpdb->prepare($query, $admin_id, $goal, $meal_plan_type), ARRAY_A);
+    }
+
+    if (!$result) {
+        throw new Exception("Macro settings not found for admin ID $admin_id, goal $goal, and approach $meal_plan_type.");
+    }
+
+    return [
+        'calorie_percentage' => (float) $result['calorie_percentage'],
+        'protein_per_lb' => (float) $result['protein_per_lb'],
+        'carbs_leftover' => (float) $result['carbs_leftover'],
+        'fats_leftover' => (float) $result['fats_leftover']
+    ];
+}
+
+function calculate_calories($bmr, $workout_day_tdee, $off_day_tdee, $meal_plan_type, $goal, $admin_id, $carb_day_type = null) {
+    // Fetch the admin's macro settings
+    $macro_settings = fetch_admin_macro_settings($admin_id, $goal, $meal_plan_type, $carb_day_type);
+
+    // Extract calorie percentage
+    if (!isset($macro_settings['calorie_percentage'])) {
+        throw new Exception("Calorie percentage not found in macro settings.");
+    }
+    $calorie_percentage = $macro_settings['calorie_percentage'];
+
+    // Calculate calories
+    $calories_workoutDay = ($bmr * $workout_day_tdee) * $calorie_percentage;
+    $calories_offDay = ($bmr * $off_day_tdee) * $calorie_percentage;
+
+    // Return the calculated calorie values
+    return [
+        'calories_workoutDay' => round($calories_workoutDay, 2),
+        'calories_offDay' => round($calories_offDay, 2)
+    ];
+}
+
+
 
 
 

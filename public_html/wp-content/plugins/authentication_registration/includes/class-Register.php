@@ -33,12 +33,6 @@ class Register {
                 return '<p>Nonce verification failed. Please try again.</p>';
             }
             
-            $birth_date = get_user_meta($user_id, 'birth_date', true);
-
-            if ($birth_date) {
-                $age = Register::calculate_age($birth_date);
-            }
-
             $email = sanitize_email($_POST['email']);
             $password = sanitize_text_field($_POST['password']);
 
@@ -245,59 +239,76 @@ class Register {
         $user = get_user_by('ID', $user_id);
         $user->set_role('user');
         update_user_meta($user_id, 'associated_admin', $admin_id);
+        
+         $birth_date = get_user_meta($user_id, 'birth_date', true);
+
+            if ($birth_date) {
+                $age = Register::calculate_age($birth_date);
+            }
+        
+        // Calculate calories using the updated function
+$calories = calculate_calories($bmr, $workout_day_tdee, $off_day_tdee, $meal_plan_type, $goal, $admin_id);
+$calories_workoutDay = $calories['calories_workoutDay'];
+$calories_offDay = $calories['calories_offDay'];
 
         // Insert additional user info into wp_user_info
         global $wpdb;
         $table_name = $wpdb->prefix . 'user_info';
 
-        if ($meal_plan_type === 'carbCycling') {
-    // For carb cycling, set standard fields to NULL and insert high/low carb values
-        $result = $wpdb->insert(
+        // Insert user data into the database, including calories
+if ($meal_plan_type === 'carbCycling') {
+    // For carb cycling, include high/low carb values
+    $result = $wpdb->insert(
         $table_name,
-            array(
-                'user_id' => $user_id,
-                'admin_id' => $admin_id,
-                'age' => $age,
-                'gender' => $gender,
-                'weight_kg' => $weight_kg,
-                'weight_lbs' => $weight_lbs,
-                'height_cm' => $height_cm,
-                'height_ft_in' => $height_ft_in,
-                'activity_level' => $activity_level,
-                'goal' => $goal,
-                'meal_plan_type' => $meal_plan_type,
-                'meal_data' => $meal_data_json, // Store as JSON
-                'training_days_per_week' => $training_days_per_week,
-                'bmr' => number_format((float)$bmr, 6, '.', ''),
-                'workout_day_tdee' => number_format((float)$workout_day_tdee, 6, '.', ''),
-                'off_day_tdee' => number_format((float)$off_day_tdee, 6, '.', ''),
-                'carbCycling_data' => $carbCycling_data_json
-            )
-        );
-        } else {
-            $result = $wpdb->insert(
+        array(
+            'user_id' => $user_id,
+            'admin_id' => $admin_id,
+            'age' => $age,
+            'gender' => $gender,
+            'weight_kg' => $weight_kg,
+            'weight_lbs' => $weight_lbs,
+            'height_cm' => $height_cm,
+            'height_ft_in' => $height_ft_in,
+            'activity_level' => $activity_level,
+            'goal' => $goal,
+            'meal_plan_type' => $meal_plan_type,
+            'meal_data' => $meal_data_json, // Store as JSON
+            'training_days_per_week' => $training_days_per_week,
+            'bmr' => number_format((float)$bmr, 6, '.', ''),
+            'workout_day_tdee' => number_format((float)$workout_day_tdee, 6, '.', ''),
+            'off_day_tdee' => number_format((float)$off_day_tdee, 6, '.', ''),
+            'calories_workoutDay' => number_format((float)$calories_workoutDay, 2, '.', ''),
+            'calories_offDay' => number_format((float)$calories_offDay, 2, '.', ''),
+            'carbCycling_data' => $carbCycling_data_json
+        )
+    );
+} else {
+    // For non-carb cycling meal plans
+    $result = $wpdb->insert(
         $table_name,
-            array(
-                'user_id' => $user_id,
-                'admin_id' => $admin_id,
-                'age' => $age,
-                'gender' => $gender,
-                'weight_kg' => $weight_kg,
-                'weight_lbs' => $weight_lbs,
-                'height_cm' => $height_cm,
-                'height_ft_in' => $height_ft_in,
-                'activity_level' => $activity_level,
-                'goal' => $goal,
-                'meal_plan_type' => $meal_plan_type,
-                'meal_data' => $meal_data_json, // Store as JSON
-                'training_days_per_week' => $training_days_per_week,
-                'bmr' => number_format((float)$bmr, 6, '.', ''),
-                'workout_day_tdee' => number_format((float)$workout_day_tdee, 6, '.', ''),
-                'off_day_tdee' => number_format((float)$off_day_tdee, 6, '.', ''),
-                'carbCycling_data' => null
-            )
-        );
-        }
+        array(
+            'user_id' => $user_id,
+            'admin_id' => $admin_id,
+            'age' => $age,
+            'gender' => $gender,
+            'weight_kg' => $weight_kg,
+            'weight_lbs' => $weight_lbs,
+            'height_cm' => $height_cm,
+            'height_ft_in' => $height_ft_in,
+            'activity_level' => $activity_level,
+            'goal' => $goal,
+            'meal_plan_type' => $meal_plan_type,
+            'meal_data' => $meal_data_json, // Store as JSON
+            'training_days_per_week' => $training_days_per_week,
+            'bmr' => number_format((float)$bmr, 6, '.', ''),
+            'workout_day_tdee' => number_format((float)$workout_day_tdee, 6, '.', ''),
+            'off_day_tdee' => number_format((float)$off_day_tdee, 6, '.', ''),
+            'calories_workoutDay' => number_format((float)$calories_workoutDay, 2, '.', ''),
+            'calories_offDay' => number_format((float)$calories_offDay, 2, '.', ''),
+            'carbCycling_data' => null
+        )
+    );
+}
         
         if ($result === false) {
             echo '<p>Error: Could not save the data. Please try again.</p>';
