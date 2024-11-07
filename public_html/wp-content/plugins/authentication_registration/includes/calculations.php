@@ -139,3 +139,39 @@ function calculate_protein($weight_lbs, $meal_plan_type, $goal, $admin_id, $carb
 
     return round($protein_intake, 2);  // Return the protein intake rounded to 2 decimal places
 }
+
+function calculate_carbs_fats($total_calories, $protein_grams, $meal_plan_type, $goal, $admin_id, $carb_day_type = null) {
+    // Fetch the admin's macro settings using your existing function
+    $macro_settings = fetch_admin_macro_settings($admin_id, $goal, $meal_plan_type, $carb_day_type);
+
+    // Ensure that carbs and fats percentages are available in the fetched settings
+    if (isset($macro_settings['carbs_leftover']) && isset($macro_settings['fats_leftover'])) {
+        $carbs_percentage = (float) $macro_settings['carbs_leftover'];
+        $fats_percentage = (float) $macro_settings['fats_leftover'];
+    } else {
+        // Return 0 if the settings are not found or incomplete
+        return [
+            'carbs_grams' => 0,
+            'fats_grams' => 0
+        ];
+    }
+
+    // Calculate protein calories (4 calories per gram of protein)
+    $protein_calories = $protein_grams * 4;
+
+    // Calculate the remaining calories for carbs and fats
+    $remaining_calories = $total_calories - $protein_calories;
+
+    // Calculate calories for carbs and fats
+    $carbs_calories = $remaining_calories * $carbs_percentage;
+    $fats_calories = $remaining_calories * $fats_percentage;
+
+    // Convert carbs and fats from calories to grams and round to 6 decimal places
+    $carbs_grams = number_format((float)($carbs_calories / 4), 6, '.', '');  // 1g of carbs = 4 calories
+    $fats_grams = number_format((float)($fats_calories / 9), 6, '.', '');    // 1g of fats = 9 calories
+
+    return [
+        'carbs_grams' => $carbs_grams,
+        'fats_grams' => $fats_grams
+    ];
+}

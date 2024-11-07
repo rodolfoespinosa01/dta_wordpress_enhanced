@@ -251,8 +251,47 @@ class Register {
         $calories_workoutDay = $calories['calories_workoutDay'];
         $calories_offDay = $calories['calories_offDay'];
         
-        // Calculate protein intake
-        $protein_intake = calculate_protein($weight_lbs, $meal_plan_type, $goal, $admin_id, $carb_day_type);
+         // Assume $weight_lbs, $meal_plan_type, $goal, $admin_id, $calories_workoutDay, and $calories_offDay are already defined
+
+if ($meal_plan_type === 'carbCycling') {
+    // Calculate protein intake for high-carb and low-carb days
+    $protein_intake_highCarb = calculate_protein($weight_lbs, $meal_plan_type, $goal, $admin_id, 'highCarb');
+    $protein_intake_lowCarb = calculate_protein($weight_lbs, $meal_plan_type, $goal, $admin_id, 'lowCarb');
+
+    // High-Carb Day for Workout
+    $workout_macros_highCarb = calculate_carbs_fats($calories_workoutDay, $protein_intake_highCarb, $meal_plan_type, $goal, $admin_id, 'highCarb');
+    $workout_carbs_highCarb = $workout_macros_highCarb['carbs_grams'];
+    $workout_fats_highCarb = $workout_macros_highCarb['fats_grams'];
+
+    // Low-Carb Day for Workout
+    $workout_macros_lowCarb = calculate_carbs_fats($calories_workoutDay, $protein_intake_lowCarb, $meal_plan_type, $goal, $admin_id, 'lowCarb');
+    $workout_carbs_lowCarb = $workout_macros_lowCarb['carbs_grams'];
+    $workout_fats_lowCarb = $workout_macros_lowCarb['fats_grams'];
+
+    // High-Carb Day for Off Days
+    $off_day_macros_highCarb = calculate_carbs_fats($calories_offDay, $protein_intake_highCarb, $meal_plan_type, $goal, $admin_id, 'highCarb');
+    $off_day_carbs_highCarb = $off_day_macros_highCarb['carbs_grams'];
+    $off_day_fats_highCarb = $off_day_macros_highCarb['fats_grams'];
+
+    // Low-Carb Day for Off Days
+    $off_day_macros_lowCarb = calculate_carbs_fats($calories_offDay, $protein_intake_lowCarb, $meal_plan_type, $goal, $admin_id, 'lowCarb');
+    $off_day_carbs_lowCarb = $off_day_macros_lowCarb['carbs_grams'];
+    $off_day_fats_lowCarb = $off_day_macros_lowCarb['fats_grams'];
+} else {
+    // For standard and keto plans
+    $protein_intake = calculate_protein($weight_lbs, $meal_plan_type, $goal, $admin_id);
+
+    // Workout Day Macros
+    $workout_macros = calculate_carbs_fats($calories_workoutDay, $protein_intake, $meal_plan_type, $goal, $admin_id);
+    $workout_carbs_grams = $workout_macros['carbs_grams'];
+    $workout_fats_grams = $workout_macros['fats_grams'];
+
+    // Off Day Macros
+    $off_day_macros = calculate_carbs_fats($calories_offDay, $protein_intake, $meal_plan_type, $goal, $admin_id);
+    $off_day_carbs_grams = $off_day_macros['carbs_grams'];
+    $off_day_fats_grams = $off_day_macros['fats_grams'];
+}
+
 
         // Insert additional user info into wp_user_info
         global $wpdb;
@@ -283,8 +322,21 @@ if ($meal_plan_type === 'carbCycling') {
             'calories_workoutDay' => number_format((float)$calories_workoutDay, 2, '.', ''),
             'calories_offDay' => number_format((float)$calories_offDay, 2, '.', ''),
             'carbCycling_data' => $carbCycling_data_json,
-             'protein_intake_highCarb' => number_format((float)$protein_intake_highCarb, 6, '.', ''),
+            'protein_intake' => null,  // Set protein_intake to NULL for carb cycling
+            'workout_carbs' => null,
+            'workout_fats' => null,
+            'off_day_carbs' => null,
+            'off_day_fats' => null,
+            'protein_intake_highCarb' => number_format((float)$protein_intake_highCarb, 6, '.', ''),
             'protein_intake_lowCarb' => number_format((float)$protein_intake_lowCarb, 6, '.', ''),
+            'workout_carbs_highCarb' => number_format((float)$workout_carbs_highCarb, 6, '.', ''),
+            'workout_carbs_lowCarb' => number_format((float)$workout_carbs_lowCarb, 6, '.', ''),
+            'workout_fats_highCarb' => number_format((float)$workout_fats_highCarb, 6, '.', ''),
+            'workout_fats_lowCarb' => number_format((float)$workout_fats_lowCarb, 6, '.', ''),
+            'off_day_carbs_highCarb' => number_format((float)$off_day_carbs_highCarb, 6, '.', ''),
+            'off_day_carbs_lowCarb' => number_format((float)$off_day_carbs_lowCarb, 6, '.', ''),
+            'off_day_fats_highCarb' => number_format((float)$off_day_fats_highCarb, 6, '.', ''),
+            'off_day_fats_lowCarb' => number_format((float)$off_day_fats_lowCarb, 6, '.', '')
         )
     );
 } else {
@@ -312,6 +364,22 @@ if ($meal_plan_type === 'carbCycling') {
             'calories_offDay' => number_format((float)$calories_offDay, 2, '.', ''),
             'carbCycling_data' => null,
             'protein_intake' => number_format((float)$protein_intake, 6, '.', ''),
+            'workout_carbs' => number_format((float)$workout_carbs_grams, 6, '.', ''),
+            'workout_fats' => number_format((float)$workout_fats_grams, 6, '.', ''),
+            'off_day_carbs' => number_format((float)$off_day_carbs_grams, 6, '.', ''),
+            'off_day_fats' => number_format((float)$off_day_fats_grams, 6, '.', ''),
+            
+            // Set carb cycling fields to NULL
+            'protein_intake_highCarb' => null,
+            'protein_intake_lowCarb' => null,
+            'workout_carbs_highCarb' => null,
+            'workout_carbs_lowCarb' => null,
+            'workout_fats_highCarb' => null,
+            'workout_fats_lowCarb' => null,
+            'off_day_carbs_highCarb' => null,
+            'off_day_carbs_lowCarb' => null,
+            'off_day_fats_highCarb' => null,
+            'off_day_fats_lowCarb' => null,
             
              // Set carb cycling fields to NULL
             'protein_intake_highCarb' => null,
