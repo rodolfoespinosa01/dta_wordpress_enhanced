@@ -115,7 +115,27 @@ function calculate_calories($bmr, $workout_day_tdee, $off_day_tdee, $meal_plan_t
     ];
 }
 
+// Function to calculate protein intake based on user's weight, meal plan, goal, and carb day type (if applicable)
+function calculate_protein($weight_lbs, $meal_plan_type, $goal, $admin_id, $carb_day_type = null) {
+    // Fetch the admin's macro settings using the new function
+    $macro_settings = fetch_admin_macro_settings($admin_id, $goal, $meal_plan_type, $carb_day_type);
 
+    // Check if the meal plan is carb cycling and handle accordingly
+    if ($meal_plan_type === 'carbCycling') {
+        if ($carb_day_type === 'lowCarb' || $carb_day_type === 'highCarb') {
+            // Use high-carb or low-carb day settings for carb cycling
+            $protein_per_lb = isset($macro_settings['protein_per_lb']) ? (float) $macro_settings['protein_per_lb'] : 0;
+        } else {
+            // If carb day type is not provided or incorrect, throw an error
+            throw new Exception("Carb day type must be provided for carb cycling and should be either 'lowCarb' or 'highCarb'.");
+        }
+    } else {
+        // For standard and keto plans, use the regular protein per pound value
+        $protein_per_lb = isset($macro_settings['protein_per_lb']) ? (float) $macro_settings['protein_per_lb'] : 0;
+    }
 
+    // Calculate the total protein intake based on the user's weight
+    $protein_intake = $weight_lbs * $protein_per_lb;
 
-
+    return round($protein_intake, 2);  // Return the protein intake rounded to 2 decimal places
+}

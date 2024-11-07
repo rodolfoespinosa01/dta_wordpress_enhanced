@@ -247,9 +247,12 @@ class Register {
             }
         
         // Calculate calories using the updated function
-$calories = calculate_calories($bmr, $workout_day_tdee, $off_day_tdee, $meal_plan_type, $goal, $admin_id);
-$calories_workoutDay = $calories['calories_workoutDay'];
-$calories_offDay = $calories['calories_offDay'];
+        $calories = calculate_calories($bmr, $workout_day_tdee, $off_day_tdee, $meal_plan_type, $goal, $admin_id);
+        $calories_workoutDay = $calories['calories_workoutDay'];
+        $calories_offDay = $calories['calories_offDay'];
+        
+        // Calculate protein intake
+        $protein_intake = calculate_protein($weight_lbs, $meal_plan_type, $goal, $admin_id, $carb_day_type);
 
         // Insert additional user info into wp_user_info
         global $wpdb;
@@ -279,7 +282,9 @@ if ($meal_plan_type === 'carbCycling') {
             'off_day_tdee' => number_format((float)$off_day_tdee, 6, '.', ''),
             'calories_workoutDay' => number_format((float)$calories_workoutDay, 2, '.', ''),
             'calories_offDay' => number_format((float)$calories_offDay, 2, '.', ''),
-            'carbCycling_data' => $carbCycling_data_json
+            'carbCycling_data' => $carbCycling_data_json,
+             'protein_intake_highCarb' => number_format((float)$protein_intake_highCarb, 6, '.', ''),
+            'protein_intake_lowCarb' => number_format((float)$protein_intake_lowCarb, 6, '.', ''),
         )
     );
 } else {
@@ -305,7 +310,12 @@ if ($meal_plan_type === 'carbCycling') {
             'off_day_tdee' => number_format((float)$off_day_tdee, 6, '.', ''),
             'calories_workoutDay' => number_format((float)$calories_workoutDay, 2, '.', ''),
             'calories_offDay' => number_format((float)$calories_offDay, 2, '.', ''),
-            'carbCycling_data' => null
+            'carbCycling_data' => null,
+            'protein_intake' => number_format((float)$protein_intake, 6, '.', ''),
+            
+             // Set carb cycling fields to NULL
+            'protein_intake_highCarb' => null,
+            'protein_intake_lowCarb' => null,
         )
     );
 }
