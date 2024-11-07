@@ -9,7 +9,7 @@ class UserDashboard {
     // Initialize the UserDashboard class
     public static function init() {
         add_shortcode('ud_dashboard', [__CLASS__, 'display_dashboard']);
-        add_action('init', [__CLASS__, 'start_session_for_dashboard']); // Add session start
+        add_action('plugins_loaded', [__CLASS__, 'start_session_for_dashboard']);
     }
 
     // Start session for dashboard
