@@ -96,6 +96,7 @@ define('WP_DEBUG_DISPLAY', false);
 define( 'FS_METHOD', 'direct' );
 define( 'COOKIEHASH', 'e905e336178a2ee97cc3fbadb00a1eca' );
 define( 'WP_AUTO_UPDATE_CORE', 'minor' );
+
 /* That's all, stop editing! Happy publishing. */
 
 /** Absolute path to the WordPress directory. */

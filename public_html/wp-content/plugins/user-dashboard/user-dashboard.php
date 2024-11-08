@@ -16,6 +16,7 @@ define('UD_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
 // Include necessary files
 include_once UD_PLUGIN_DIR . 'includes/class-UserDashboard.php';
+include_once UD_PLUGIN_DIR . 'includes/calculations.php'; // Include calculations helper functions
 
 // Initialize the plugin
 function ud_initialize_user_dashboard() {
