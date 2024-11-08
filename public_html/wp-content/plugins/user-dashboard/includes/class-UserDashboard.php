@@ -11,12 +11,10 @@ class UserDashboard {
         // Include other component classes
         include_once plugin_dir_path(__FILE__) . 'class-ProfileOverview.php';
         include_once plugin_dir_path(__FILE__) . 'class-DailyMacros.php';
-        include_once plugin_dir_path(__FILE__) . 'class-MealPlanMacros.php'; // Include Meal Plan Macros class
 
         // Initialize the Profile Overview, Daily Macros, and Meal Plan Macros components
         ProfileOverview::init();
         DailyMacros::init();
-        MealPlanMacros::init(); // Initialize Meal Plan Macros
 
         // Register main dashboard shortcode
         add_shortcode('ud_dashboard', [__CLASS__, 'display_dashboard']);
