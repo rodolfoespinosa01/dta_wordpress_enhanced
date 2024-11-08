@@ -42,7 +42,7 @@ class EditMealSettings {
             echo '<h3>' . esc_html($title) . '</h3>';
             foreach (['protein', 'carbs', 'fats'] as $nutrient) {
                 echo "<label>" . ucfirst($nutrient) . " for Meal " . esc_attr($setting['meal_number']) . ":";
-                echo '<input type="number" name="' . esc_attr("{$nutrient}[{$setting['id']}]") . '" value="' . esc_attr($setting[$nutrient]) . '" step="0.01"></label><br>';
+                echo '<input type="number" name="' . esc_attr("{$nutrient}[{$setting['id']}]") . '" value="' . esc_attr($setting[$nutrient]) . '" step="any"></label><br>';
             }
             echo '<br>';
         }

@@ -108,21 +108,44 @@ class Dashboard {
         return $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $table_name WHERE admin_id = %d", $user_id)) > 0;
     }
 
-    private static function insert_default_meal_settings($user_id) {
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'meal_settings';
-        $meal_settings = include plugin_dir_path(__FILE__) . 'data-default-meal-settings.php';
+   private static function insert_default_meal_settings($user_id) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'meal_settings';
+    $meal_settings = include plugin_dir_path(__FILE__) . 'data-default-meal-settings.php';
 
-        foreach ($meal_settings as $approach => $meals_per_day) {
-            foreach ($meals_per_day as $meals => $days) {
-                if (in_array($approach, ['standard', 'keto'])) {
-                    foreach ($days as $day_type => $meals_array) {
+    foreach ($meal_settings as $approach => $meals_per_day) {
+        foreach ($meals_per_day as $meals => $days) {
+            if (in_array($approach, ['standard', 'keto'])) {
+                // Handle 'standard' and 'keto' meal plans
+                foreach ($days as $day_type => $meals_array) {
+                    foreach ($meals_array as $meal_number => $nutrients) {
+                        $result = $wpdb->insert($table_name, [
+                            'admin_id'      => $user_id,
+                            'approach'      => $approach,
+                            'meals_per_day' => $meals,
+                            'carb_type'     => NULL, // No carb type for standard or keto
+                            'day_type'      => $day_type,
+                            'meal_number'   => $meal_number,
+                            'protein'       => $nutrients['protein'],
+                            'carbs'         => $nutrients['carbs'],
+                            'fats'          => $nutrients['fats'],
+                        ]);
+
+                        if (false === $result) {
+                            error_log('Database insert error in meal settings: ' . $wpdb->last_error);
+                        }
+                    }
+                }
+            } elseif ($approach === 'carbCycling') {
+                // Handle 'carbCycling' meal plan
+                foreach ($days as $carb_type => $day_settings) {
+                    foreach ($day_settings as $day_type => $meals_array) {
                         foreach ($meals_array as $meal_number => $nutrients) {
                             $result = $wpdb->insert($table_name, [
                                 'admin_id'      => $user_id,
                                 'approach'      => $approach,
                                 'meals_per_day' => $meals,
-                                'carb_type'     => NULL,
+                                'carb_type'     => $carb_type, // 'lowCarb' or 'highCarb'
                                 'day_type'      => $day_type,
                                 'meal_number'   => $meal_number,
                                 'protein'       => $nutrients['protein'],
@@ -131,7 +154,7 @@ class Dashboard {
                             ]);
 
                             if (false === $result) {
-                                error_log('Database insert error in meal settings: ' . $wpdb->last_error);
+                                error_log('Database insert error in carbCycling settings: ' . $wpdb->last_error);
                             }
                         }
                     }
@@ -139,6 +162,8 @@ class Dashboard {
             }
         }
     }
+}
+
 
     private static function tdee_multipliers_initialized($user_id) {
         global $wpdb;
