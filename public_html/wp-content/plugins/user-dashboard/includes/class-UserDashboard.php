@@ -10,12 +10,14 @@ class UserDashboard {
     public static function init() {
         // Include other component classes
         include_once plugin_dir_path(__FILE__) . 'class-ProfileOverview.php';
-        include_once plugin_dir_path(__FILE__) . 'class-DailyMacros.php';
-        require_once plugin_dir_path(__FILE__) . 'class-UserDashboardUtils.php';
-        require_once plugin_dir_path(__FILE__) . 'class-MealSettings.php';
-        require_once plugin_dir_path(__FILE__) . 'class-MacroSettings.php';
-        require_once plugin_dir_path(__FILE__) . 'class-MealPlanDisplay.php';
-        require_once plugin_dir_path(__FILE__) . 'class-TDEEMultipliers.php';
+include_once plugin_dir_path(__FILE__) . 'class-DailyMacros.php';
+require_once plugin_dir_path(__FILE__) . 'class-UserDashboardUtils.php';
+require_once plugin_dir_path(__FILE__) . 'class-MealSettings.php';
+require_once plugin_dir_path(__FILE__) . 'class-MacroSettings.php';
+require_once plugin_dir_path(__FILE__) . 'class-MealPlanDisplay.php';
+require_once plugin_dir_path(__FILE__) . 'class-TDEEMultipliers.php';
+require_once plugin_dir_path(__FILE__) . 'class-MealComboForm.php';
+
 
 
         
