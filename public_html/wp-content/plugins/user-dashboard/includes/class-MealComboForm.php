@@ -42,37 +42,31 @@ class MealComboForm {
             return '<p>Error decoding meal data: ' . json_last_error_msg() . '</p>';
         }
 
-        // Handle form submission for meal food selections
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['c1_protein_1'])) {
-            // Define the single, shared table name
-            $table_name = "{$wpdb->prefix}meal_combos";
+        // Get the selected day from the dropdown or default to Sunday
+        $allowed_days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+        $selected_day = isset($_POST['selected_day']) ? sanitize_text_field($_POST['selected_day']) : 'sunday';
 
-            // Ensure the shared table exists
-            $create_table_query = "
-                CREATE TABLE IF NOT EXISTS $table_name (
-                    id mediumint(9) NOT NULL AUTO_INCREMENT,
-                    user_id mediumint(9) NOT NULL,
-                    day_of_week varchar(10) NOT NULL,
-                    meal_number int(2) NOT NULL,
-                    meal_combo_id int(11) NOT NULL,
-                    PRIMARY KEY (id)
-                )";
+        // Check if existing meal combos are saved for the selected day
+        $table_name = "{$wpdb->prefix}meal_combos";
+        $saved_combos = $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM $table_name WHERE user_id = %d AND day_of_week = %s ORDER BY meal_number",
+            $user_id,
+            $selected_day
+        ));
 
-            $wpdb->query($create_table_query);
+        // Determine if the user wants to edit the meal plan
+        $editing = isset($_POST['edit_meal_plan']);
 
-            if ($wpdb->last_error) {
-                return '<p>Error creating the table: ' . $wpdb->last_error . '</p>';
-            }
-
-            // Delete existing data for the selected day for this user to overwrite
-            $selected_day = sanitize_text_field($_POST['selected_day']);
+        // Handle form submission for updates or new entries
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['c1_protein_1']) && !$editing) {
+            // Delete existing data for the selected day
             $wpdb->delete(
                 $table_name,
                 array('day_of_week' => $selected_day, 'user_id' => $user_id),
                 array('%s', '%d')
             );
 
-            // Insert the meal combo data into the shared table
+            // Insert the new meal combo data
             foreach ($_POST['c1_protein_1'] as $meal_num => $protein_1) {
                 $protein_2 = sanitize_text_field($_POST['c1_protein_2'][$meal_num]);
                 $carbs_1 = sanitize_text_field($_POST['c1_carbs_1'][$meal_num]);
@@ -108,11 +102,14 @@ class MealComboForm {
                     if ($wpdb->last_error) {
                         return '<p>Error saving meal combo: ' . $wpdb->last_error . '</p>';
                     }
-                } else {
-                    echo "<p>No matching combo found for Meal {$meal_num} on " . ucfirst($selected_day) . ".</p>";
                 }
             }
             echo "<p>Meal combos for " . ucfirst($selected_day) . " saved successfully!</p>";
+            $saved_combos = $wpdb->get_results($wpdb->prepare(
+                "SELECT * FROM $table_name WHERE user_id = %d AND day_of_week = %s ORDER BY meal_number",
+                $user_id,
+                $selected_day
+            ));
         }
 
         // Start the form
@@ -121,11 +118,7 @@ class MealComboForm {
         <form id="meal_combo_form" method="post">
             <label for="selected_day">Select Day of the Week:</label>
             <select name="selected_day" id="selected_day" onchange="this.form.submit()">
-                <?php 
-                $allowed_days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-                $selected_day = isset($_POST['selected_day']) ? sanitize_text_field($_POST['selected_day']) : 'sunday';
-
-                foreach ($allowed_days as $day): ?>
+                <?php foreach ($allowed_days as $day): ?>
                     <option value="<?php echo $day; ?>" <?php echo ($day === $selected_day) ? 'selected' : ''; ?>>
                         <?php echo ucfirst($day); ?>
                     </option>
@@ -133,106 +126,152 @@ class MealComboForm {
             </select>
         </form>
 
-        <form method="post">
-            <input type="hidden" name="selected_day" value="<?php echo $selected_day; ?>">
+        <h3><?php echo ucfirst($selected_day); ?></h3>
 
-            <h3><?php echo ucfirst($selected_day); ?></h3>
-            <?php 
-            $meal_info = isset($meal_data[$selected_day]) ? $meal_data[$selected_day] : null;
+        <?php if (!empty($saved_combos) && !$editing): ?>
+            <h4>Saved Meals for <?php echo ucfirst($selected_day); ?></h4>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Meal</th>
+                        <th>Protein 1</th>
+                        <th>Protein 2</th>
+                        <th>Carbs 1</th>
+                        <th>Carbs 2</th>
+                        <th>Fats 1</th>
+                        <th>Fats 2</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($saved_combos as $combo): ?>
+                        <?php
+                        $meal_combo = $wpdb->get_row($wpdb->prepare(
+                            "SELECT * FROM {$wpdb->prefix}combos WHERE c1_id = %d",
+                            $combo->meal_combo_id
+                        ));
+                        ?>
+                        <tr>
+                            <td>Meal <?php echo $combo->meal_number; ?></td>
+                            <td><?php echo esc_html($meal_combo->c1_protein_1); ?></td>
+                            <td><?php echo esc_html($meal_combo->c1_protein_2); ?></td>
+                            <td><?php echo esc_html($meal_combo->c1_carbs_1); ?></td>
+                            <td><?php echo esc_html($meal_combo->c1_carbs_2); ?></td>
+                            <td><?php echo esc_html($meal_combo->c1_fats_1); ?></td>
+                            <td><?php echo esc_html($meal_combo->c1_fats_2); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+            <form method="post">
+                <button type="submit" name="edit_meal_plan" value="1">Edit Meal Plan</button>
+            </form>
+        <?php else: ?>
+            <h4>Customize Your Meals</h4>
+            <form method="post">
+    <input type="hidden" name="selected_day" value="<?php echo esc_attr($selected_day); ?>">
+    <?php
+    // Get meal information for the selected day
+    $meal_info = $meal_data[$selected_day] ?? null;
 
-            if ($meal_info):
-                for ($meal_num = 1; $meal_num <= $meal_info['meals']; $meal_num++): ?>
-                    <h4>Customize Meal <?php echo $meal_num; ?></h4>
-                    <!-- Protein 1 -->
-                    <label for="c1_protein_1_<?php echo $meal_num; ?>">Protein 1:</label>
-                    <select name="c1_protein_1[<?php echo $meal_num; ?>]" id="c1_protein_1_<?php echo $meal_num; ?>" required>
-                        <option value="">Select Protein 1</option>
-                       <option value="-">-</option>
-                    <option value="Bison">Bison</option>
-                    <option value="Chicken Breast">Chicken Breast</option>
-                    <option value="Egg Whites">Egg Whites</option>
-                    <option value="Eggs">Eggs</option>
-                    <option value="Ground Beef STANDARD">Ground Beef STANDARD</option>
-                    <option value="Ground Turkey STANDARD">Ground Turkey STANDARD</option>
-                    <option value="Lamb">Lamb</option>
-                    <option value="Pork Tenderloin">Pork Tenderloin</option>
-                    <option value="Salmon">Salmon</option>
-                    <option value="Steak STANDARD">Steak STANDARD</option>
-                    <option value="Tilapia">Tilapia</option>
-                    <option value="Tuna STANDARD">Tuna STANDARD</option>
-                    </select><br>
+    if ($meal_info):
+        for ($meal_num = 1; $meal_num <= $meal_info['meals']; $meal_num++):
+            // Retrieve saved combos for the current meal (if available)
+            $saved_combo = $saved_combos[$meal_num - 1] ?? null;
+            ?>
+            <h4>Customize Meal <?php echo $meal_num; ?></h4>
 
-                    <!-- Protein 2 -->
-                    <label for="c1_protein_2_<?php echo $meal_num; ?>">Protein 2:</label>
-                    <select name="c1_protein_2[<?php echo $meal_num; ?>]" id="c1_protein_2_<?php echo $meal_num; ?>" required>
-                        <option value="">Select Protein 2</option>
-                        <option value="-">-</option>
-                    <option value="Chicken Breast">Chicken Breast</option>
-                    <option value="Ground Turkey STANDARD">Ground Turkey STANDARD</option>
-                    <option value="Ground Beef STANDARD">Ground Beef STANDARD</option>
-                    <option value="Lamb">Lamb</option>
-                    <option value="Steak STANDARD">Steak STANDARD</option>
-                    <option value="Pork Tenderloin">Pork Tenderloin</option>
-                    <option value="Salmon">Salmon</option>
-                    <option value="Tilapia">Tilapia</option>
-                    <option value="Tuna STANDARD">Tuna STANDARD</option>
-                    <option value="Eggs">Eggs</option>
-                    <option value="Egg Whites">Egg Whites</option>
-                    </select><br>
+            <!-- Protein 1 -->
+            <label for="c1_protein_1_<?php echo $meal_num; ?>">Protein 1:</label>
+            <select name="c1_protein_1[<?php echo $meal_num; ?>]" required>
+                <option value="">Select Protein 1</option>
+    <option value="-" <?php echo $saved_combo && $saved_combo->c1_protein_1 === "-" ? 'selected' : ''; ?>>-</option>
+    <option value="Bison" <?php echo $saved_combo && $saved_combo->c1_protein_1 === "Bison" ? 'selected' : ''; ?>>Bison</option>
+    <option value="Chicken Breast" <?php echo $saved_combo && $saved_combo->c1_protein_1 === "Chicken Breast" ? 'selected' : ''; ?>>Chicken Breast</option>
+    <option value="Egg Whites" <?php echo $saved_combo && $saved_combo->c1_protein_1 === "Egg Whites" ? 'selected' : ''; ?>>Egg Whites</option>
+    <option value="Eggs" <?php echo $saved_combo && $saved_combo->c1_protein_1 === "Eggs" ? 'selected' : ''; ?>>Eggs</option>
+    <option value="Ground Beef STANDARD" <?php echo $saved_combo && $saved_combo->c1_protein_1 === "Ground Beef STANDARD" ? 'selected' : ''; ?>>Ground Beef STANDARD</option>
+    <option value="Ground Turkey STANDARD" <?php echo $saved_combo && $saved_combo->c1_protein_1 === "Ground Turkey STANDARD" ? 'selected' : ''; ?>>Ground Turkey STANDARD</option>
+    <option value="Lamb" <?php echo $saved_combo && $saved_combo->c1_protein_1 === "Lamb" ? 'selected' : ''; ?>>Lamb</option>
+    <option value="Pork Tenderloin" <?php echo $saved_combo && $saved_combo->c1_protein_1 === "Pork Tenderloin" ? 'selected' : ''; ?>>Pork Tenderloin</option>
+    <option value="Salmon" <?php echo $saved_combo && $saved_combo->c1_protein_1 === "Salmon" ? 'selected' : ''; ?>>Salmon</option>
+    <option value="Steak STANDARD" <?php echo $saved_combo && $saved_combo->c1_protein_1 === "Steak STANDARD" ? 'selected' : ''; ?>>Steak STANDARD</option>
+    <option value="Tilapia" <?php echo $saved_combo && $saved_combo->c1_protein_1 === "Tilapia" ? 'selected' : ''; ?>>Tilapia</option>
+    <option value="Tuna STANDARD" <?php echo $saved_combo && $saved_combo->c1_protein_1 === "Tuna STANDARD" ? 'selected' : ''; ?>>Tuna STANDARD</option>
+            </select><br>
 
-                    <!-- Carbs 1 -->
-                    <label for="c1_carbs_1_<?php echo $meal_num; ?>">Carbs 1:</label>
-                    <select name="c1_carbs_1[<?php echo $meal_num; ?>]" id="c1_carbs_1_<?php echo $meal_num; ?>" required>
-                        <option value="">Select Carbs 1</option>
-                        <option value="-">-</option>
-                    <option value="Quinoa">Quinoa</option>
-                    <option value="White Rice">White Rice</option>
-                    <option value="Brown Rice">Brown Rice</option>
-                    <option value="Sweet Potatoe">Sweet Potatoe</option>
-                    <option value="White Potatoe">White Potatoe</option>
-                    <option value="Beans STANDARD">Beans STANDARD</option>
-                    <option value="Lentils">Lentils</option>
-                    <option value="Whole Wheat Pasta">Whole Wheat Pasta</option>
-                    <option value="Plain Pasta">Plain Pasta</option>
-                    <option value="Banana">Banana</option>
-                    </select><br>
+            <!-- Protein 2 -->
+            <label for="c1_protein_2_<?php echo $meal_num; ?>">Protein 2:</label>
+            <select name="c1_protein_2[<?php echo $meal_num; ?>]" required>
+                <option value="">Select Protein 2</option>
+                <option value="-" <?php echo $saved_combo && $saved_combo->c1_protein_2 === "-" ? 'selected' : ''; ?>>-</option>
+                <option value="Chicken Breast" <?php echo $saved_combo && $saved_combo->c1_protein_2 === "Chicken Breast" ? 'selected' : ''; ?>>Chicken Breast</option>
+                <option value="Ground Turkey STANDARD" <?php echo $saved_combo && $saved_combo->c1_protein_2 === "Ground Turkey STANDARD" ? 'selected' : ''; ?>>Ground Turkey STANDARD</option>
+                <option value="Ground Beef STANDARD" <?php echo $saved_combo && $saved_combo->c1_protein_2 === "Ground Beef STANDARD" ? 'selected' : ''; ?>>Ground Beef STANDARD</option>
+                <option value="Lamb" <?php echo $saved_combo && $saved_combo->c1_protein_2 === "Lamb" ? 'selected' : ''; ?>>Lamb</option>
+                <option value="Steak STANDARD" <?php echo $saved_combo && $saved_combo->c1_protein_2 === "Steak STANDARD" ? 'selected' : ''; ?>>Steak STANDARD</option>
+                <option value="Pork Tenderloin" <?php echo $saved_combo && $saved_combo->c1_protein_2 === "Pork Tenderloin" ? 'selected' : ''; ?>>Pork Tenderloin</option>
+                <option value="Salmon" <?php echo $saved_combo && $saved_combo->c1_protein_2 === "Salmon" ? 'selected' : ''; ?>>Salmon</option>
+                <option value="Tilapia" <?php echo $saved_combo && $saved_combo->c1_protein_2 === "Tilapia" ? 'selected' : ''; ?>>Tilapia</option>
+                <option value="Tuna STANDARD" <?php echo $saved_combo && $saved_combo->c1_protein_2 === "Tuna STANDARD" ? 'selected' : ''; ?>>Tuna STANDARD</option>
+                <option value="Eggs" <?php echo $saved_combo && $saved_combo->c1_protein_2 === "Eggs" ? 'selected' : ''; ?>>Eggs</option>
+                <option value="Egg Whites" <?php echo $saved_combo && $saved_combo->c1_protein_2 === "Egg Whites" ? 'selected' : ''; ?>>Egg Whites</option>
+            </select><br>
 
-                    <!-- Carbs 2 -->
-                    <label for="c1_carbs_2_<?php echo $meal_num; ?>">Carbs 2:</label>
-                    <select name="c1_carbs_2[<?php echo $meal_num; ?>]" id="c1_carbs_2_<?php echo $meal_num; ?>" required>
-                        <option value="">Select Carbs 2</option>
-                        <option value="-">-</option>
-                    <option value="Beans STANDARD">Beans STANDARD</option>
-                    <option value="Lentils">Lentils</option>
-                    <option value="Banana">Banana</option>
-                    <option value="Sweet Potatoe">Sweet Potatoe</option>
-                    <option value="White Potatoe">White Potatoe</option>
-                    </select><br>
+            <!-- Carbs 1 -->
+            <label for="c1_carbs_1_<?php echo $meal_num; ?>">Carbs 1:</label>
+            <select name="c1_carbs_1[<?php echo $meal_num; ?>]" required>
+                <option value="">Select Carbs 1</option>
+                <option value="-" <?php echo $saved_combo && $saved_combo->c1_carbs_1 === "-" ? 'selected' : ''; ?>>-</option>
+                <option value="Quinoa" <?php echo $saved_combo && $saved_combo->c1_carbs_1 === "Quinoa" ? 'selected' : ''; ?>>Quinoa</option>
+                <option value="White Rice" <?php echo $saved_combo && $saved_combo->c1_carbs_1 === "White Rice" ? 'selected' : ''; ?>>White Rice</option>
+                <option value="Brown Rice" <?php echo $saved_combo && $saved_combo->c1_carbs_1 === "Brown Rice" ? 'selected' : ''; ?>>Brown Rice</option>
+                <option value="Sweet Potato" <?php echo $saved_combo && $saved_combo->c1_carbs_1 === "Sweet Potato" ? 'selected' : ''; ?>>Sweet Potato</option>
+                <option value="White Potato" <?php echo $saved_combo && $saved_combo->c1_carbs_1 === "White Potato" ? 'selected' : ''; ?>>White Potato</option>
+                <option value="Beans STANDARD" <?php echo $saved_combo && $saved_combo->c1_carbs_1 === "Beans STANDARD" ? 'selected' : ''; ?>>Beans STANDARD</option>
+                <option value="Lentils" <?php echo $saved_combo && $saved_combo->c1_carbs_1 === "Lentils" ? 'selected' : ''; ?>>Lentils</option>
+                <option value="Whole Wheat Pasta" <?php echo $saved_combo && $saved_combo->c1_carbs_1 === "Whole Wheat Pasta" ? 'selected' : ''; ?>>Whole Wheat Pasta</option>
+                <option value="Plain Pasta" <?php echo $saved_combo && $saved_combo->c1_carbs_1 === "Plain Pasta" ? 'selected' : ''; ?>>Plain Pasta</option>
+                <option value="Banana" <?php echo $saved_combo && $saved_combo->c1_carbs_1 === "Banana" ? 'selected' : ''; ?>>Banana</option>
+            </select><br>
 
-                    <!-- Fats 1 -->
-                    <label for="c1_fats_1_<?php echo $meal_num; ?>">Fats 1:</label>
-                    <select name="c1_fats_1[<?php echo $meal_num; ?>]" id="c1_fats_1_<?php echo $meal_num; ?>" required>
-                        <option value="">Select Fats 1</option>
-                        <option value="-">-</option>
-                    <option value="Avocado">Avocado</option>
-                    <option value="Nuts STANDARD">Nuts STANDARD</option>
-                    </select><br>
+            <!-- Carbs 2 -->
+            <label for="c1_carbs_2_<?php echo $meal_num; ?>">Carbs 2:</label>
+            <select name="c1_carbs_2[<?php echo $meal_num; ?>]" required>
+                <option value="">Select Carbs 2</option>
+                <option value="-" <?php echo $saved_combo && $saved_combo->c1_carbs_2 === "-" ? 'selected' : ''; ?>>-</option>
+                <option value="Beans STANDARD" <?php echo $saved_combo && $saved_combo->c1_carbs_2 === "Beans STANDARD" ? 'selected' : ''; ?>>Beans STANDARD</option>
+                <option value="Lentils" <?php echo $saved_combo && $saved_combo->c1_carbs_2 === "Lentils" ? 'selected' : ''; ?>>Lentils</option>
+                <option value="Banana" <?php echo $saved_combo && $saved_combo->c1_carbs_2 === "Banana" ? 'selected' : ''; ?>>Banana</option>
+                <option value="Sweet Potato" <?php echo $saved_combo && $saved_combo->c1_carbs_2 === "Sweet Potato" ? 'selected' : ''; ?>>Sweet Potato</option>
+                <option value="White Potato" <?php echo $saved_combo && $saved_combo->c1_carbs_2 === "White Potato" ? 'selected' : ''; ?>>White Potato</option>
+            </select><br>
 
-                    <!-- Fats 2 -->
-                    <label for="c1_fats_2_<?php echo $meal_num; ?>">Fats 2:</label>
-                    <select name="c1_fats_2[<?php echo $meal_num; ?>]" id="c1_fats_2_<?php echo $meal_num; ?>" required>
-                        <option value="">Select Fats 2</option>
-                        <option value="-">-</option>
-                    <option value="Oil STANDARD">Oil STANDARD</option>
-                    </select><br><br>
-                <?php endfor;
-            endif; ?>
+            <!-- Fats 1 -->
+            <label for="c1_fats_1_<?php echo $meal_num; ?>">Fats 1:</label>
+            <select name="c1_fats_1[<?php echo $meal_num; ?>]" required>
+                <option value="">Select Fats 1</option>
+                <option value="-" <?php echo $saved_combo && $saved_combo->c1_fats_1 === "-" ? 'selected' : ''; ?>>-</option>
+                <option value="Avocado" <?php echo $saved_combo && $saved_combo->c1_fats_1 === "Avocado" ? 'selected' : ''; ?>>Avocado</option>
+                <option value="Nuts STANDARD" <?php echo $saved_combo && $saved_combo->c1_fats_1 === "Nuts STANDARD" ? 'selected' : ''; ?>>Nuts STANDARD</option>
+            </select><br>
 
-            <input type="submit" value="Save Custom Meal Plan">
-        </form>
+            <!-- Fats 2 -->
+            <label for="c1_fats_2_<?php echo $meal_num; ?>">Fats 2:</label>
+            <select name="c1_fats_2[<?php echo $meal_num; ?>]" required>
+                <option value="">Select Fats 2</option>
+                <option value="-" <?php echo $saved_combo && $saved_combo->c1_fats_2 === "-" ? 'selected' : ''; ?>>-</option>
+                <option value="Oil STANDARD" <?php echo $saved_combo && $saved_combo->c1_fats_2 === "Oil STANDARD" ? 'selected' : ''; ?>>Oil STANDARD</option>
+            </select><br><br>
+        <?php endfor; ?>
+    <?php endif; ?>
+
+    <button type="submit">Save Meals</button>
+</form>
+
+        <?php endif; ?>
         <?php
 
-        return ob_get_clean();  // Return the buffered output
+        return ob_get_clean();
     }
 }
 
