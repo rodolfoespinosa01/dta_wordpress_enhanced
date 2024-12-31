@@ -56,57 +56,56 @@ class MealComboForm {
         $edit_meal_number = isset($_POST['edit_meal_number']) ? intval($_POST['edit_meal_number']) : null;
 
         // Handle form submission
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['c1_protein_1'])) {
-            if ($edit_meal_number !== null) {
-                // Update a single meal
-                $protein_1 = sanitize_text_field($_POST['c1_protein_1']);
-                $protein_2 = sanitize_text_field($_POST['c1_protein_2']);
-                $carbs_1 = sanitize_text_field($_POST['c1_carbs_1']);
-                $carbs_2 = sanitize_text_field($_POST['c1_carbs_2']);
-                $fats_1 = sanitize_text_field($_POST['c1_fats_1']);
-                $fats_2 = sanitize_text_field($_POST['c1_fats_2']);
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['c1_protein_1'])) {
+    if ($edit_meal_number !== null) {
+        // Update a single meal
+        $protein_1 = sanitize_text_field($_POST['c1_protein_1']);
+        $protein_2 = sanitize_text_field($_POST['c1_protein_2']);
+        $carbs_1 = sanitize_text_field($_POST['c1_carbs_1']);
+        $carbs_2 = sanitize_text_field($_POST['c1_carbs_2']);
+        $fats_1 = sanitize_text_field($_POST['c1_fats_1']);
+        $fats_2 = sanitize_text_field($_POST['c1_fats_2']);
 
-                $meal_combo_id = $wpdb->get_var($wpdb->prepare(
-                    "SELECT c1_id FROM {$wpdb->prefix}combos 
-                     WHERE c1_protein_1 = %s 
-                     AND c1_protein_2 = %s 
-                     AND c1_carbs_1 = %s 
-                     AND c1_carbs_2 = %s 
-                     AND c1_fats_1 = %s 
-                     AND c1_fats_2 = %s",
-                    $protein_1, $protein_2, $carbs_1, $carbs_2, $fats_1, $fats_2
-                ));
+        $meal_combo_id = $wpdb->get_var($wpdb->prepare(
+            "SELECT c1_id FROM {$wpdb->prefix}combos 
+             WHERE c1_protein_1 = %s 
+             AND c1_protein_2 = %s 
+             AND c1_carbs_1 = %s 
+             AND c1_carbs_2 = %s 
+             AND c1_fats_1 = %s 
+             AND c1_fats_2 = %s",
+            $protein_1, $protein_2, $carbs_1, $carbs_2, $fats_1, $fats_2
+        ));
 
-                if ($meal_combo_id) {
-                    $wpdb->update(
-                        $table_name,
-                        ['meal_combo_id' => $meal_combo_id],
-                        ['user_id' => $user_id, 'day_of_week' => $selected_day, 'meal_number' => $edit_meal_number],
-                        ['%d'],
-                        ['%d', '%s', '%d']
-                    );
+        if ($meal_combo_id) {
+            $wpdb->update(
+                $table_name,
+                ['meal_combo_id' => $meal_combo_id],
+                ['user_id' => $user_id, 'day_of_week' => $selected_day, 'meal_number' => $edit_meal_number],
+                ['%d'],
+                ['%d', '%s', '%d']
+            );
 
-                    // Confirm update success
-                    if ($wpdb->last_error) {
-                        echo "<p>Error updating Meal $edit_meal_number: " . $wpdb->last_error . "</p>";
-                    } else {
-                        echo "<p>Meal $edit_meal_number updated successfully!</p>";
-                    }
-                } else {
-                    echo "<p>No matching meal combo found for the given inputs.</p>";
-                }
-
-                // Refresh saved combos after update
-                $saved_combos = $wpdb->get_results($wpdb->prepare(
-                    "SELECT * FROM $table_name WHERE user_id = %d AND day_of_week = %s ORDER BY meal_number",
-                    $user_id,
-                    $selected_day
-                ));
-
-                // Exit editing mode after save
-                $edit_meal_number = null;
+            // Confirm update success
+            if ($wpdb->last_error) {
+                echo "<p>Error updating Meal $edit_meal_number: " . $wpdb->last_error . "</p>";
+            } else {
+                echo "<p>Meal $edit_meal_number updated successfully!</p>";
             }
+        } else {
+            echo "<p>No matching meal combo found for the given inputs.</p>";
         }
+
+        // Refresh saved combos and exit edit mode
+        $saved_combos = $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM $table_name WHERE user_id = %d AND day_of_week = %s ORDER BY meal_number",
+            $user_id,
+            $selected_day
+        ));
+        $edit_meal_number = null; // Exit edit mode
+    }
+}
+
 
         // Render form
         ob_start();
@@ -164,19 +163,18 @@ class MealComboForm {
                     <?php endforeach; ?>
                 </tbody>
             </table>
-        <?php elseif ($edit_meal_number !== null): ?>
+        <?php elseif ($edit_meal_number !== null || !$saved_combos): ?>
             <?php
-            $meal_combo_details = $wpdb->get_row($wpdb->prepare(
-                "SELECT * FROM $table_name WHERE user_id = %d AND day_of_week = %s AND meal_number = %d",
-                $user_id, $selected_day, $edit_meal_number
-            ));
-            ?>
-            <h4>Edit Meal <?php echo $edit_meal_number; ?></h4>
-            <form method="post">
-                <input type="hidden" name="selected_day" value="<?php echo esc_attr($selected_day); ?>">
-                <input type="hidden" name="edit_meal_number" value="<?php echo $edit_meal_number; ?>">
+            $meals_to_render = $saved_combos ? [$edit_meal_number] : range(1, $meal_data[$selected_day]['meals']);
+            foreach ($meals_to_render as $meal_num):
+                $meal_combo_details = $saved_combos[$meal_num - 1] ?? null;
+                ?>
+                <h4>Customize Meal <?php echo $meal_num; ?></h4>
+                <form method="post">
+                    <input type="hidden" name="selected_day" value="<?php echo esc_attr($selected_day); ?>">
+                    <input type="hidden" name="edit_meal_number" value="<?php echo $meal_num; ?>">
 
-                <!-- Protein 1 -->
+                    <!-- Protein 1 -->
     <label for="c1_protein_1">Protein 1:</label>
     <select name="c1_protein_1" required>
         <option value="">Select Protein 1</option>
@@ -263,11 +261,11 @@ class MealComboForm {
         <option value="-" <?php echo $meal_combo_details && $meal_combo_details->c1_fats_2 === "-" ? 'selected' : ''; ?>>-</option>
         <option value="Oil STANDARD" <?php echo $meal_combo_details && $meal_combo_details->c1_fats_2 === "Oil STANDARD" ? 'selected' : ''; ?>>Oil STANDARD</option>
     </select>
-    <br><br>
-
-    <button type="submit">Save Meal</button>
-</form>
-
+                    </select>
+                    <br>
+                    <button type="submit">Save Meal</button>
+                </form>
+            <?php endforeach; ?>
         <?php endif; ?>
 
         <?php
