@@ -8,14 +8,35 @@ class MealComboForm {
 
     public static function init() {
         add_shortcode('meal_combo_form', [__CLASS__, 'render_meal_combo_form']);
+        register_activation_hook(__FILE__, [__CLASS__, 'create_meal_combos_table']);
+    }
+
+    // Create table if it doesn't exist
+    public static function create_meal_combos_table() {
+        global $wpdb;
+        $table_name = "{$wpdb->prefix}meal_combos";
+
+        $charset_collate = $wpdb->get_charset_collate();
+
+        $sql = "CREATE TABLE IF NOT EXISTS $table_name (
+            id INT NOT NULL AUTO_INCREMENT,
+            user_id INT NOT NULL,
+            day_of_week VARCHAR(10) NOT NULL,
+            meal_number INT NOT NULL,
+            meal_combo_id INT NOT NULL,
+            PRIMARY KEY (id),
+            UNIQUE KEY user_day_meal (user_id, day_of_week, meal_number)
+        ) $charset_collate;";
+
+        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+        dbDelta($sql);
     }
 
     public static function render_meal_combo_form() {
-        if (is_admin()) {
-            return; // Prevent execution in the admin area
-        }
-
         global $wpdb;
+
+        // Ensure the table exists before proceeding
+        self::create_meal_combos_table();
 
         // Check if the user is logged in
         if (!is_user_logged_in()) {
@@ -56,56 +77,102 @@ class MealComboForm {
         $edit_meal_number = isset($_POST['edit_meal_number']) ? intval($_POST['edit_meal_number']) : null;
 
         // Handle form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['c1_protein_1'])) {
-    if ($edit_meal_number !== null) {
-        // Update a single meal
-        $protein_1 = sanitize_text_field($_POST['c1_protein_1']);
-        $protein_2 = sanitize_text_field($_POST['c1_protein_2']);
-        $carbs_1 = sanitize_text_field($_POST['c1_carbs_1']);
-        $carbs_2 = sanitize_text_field($_POST['c1_carbs_2']);
-        $fats_1 = sanitize_text_field($_POST['c1_fats_1']);
-        $fats_2 = sanitize_text_field($_POST['c1_fats_2']);
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (isset($_POST['edit_meal_number']) && isset($_POST['c1_protein_1'])) {
+                // Edit a single meal
+                $protein_1 = sanitize_text_field($_POST['c1_protein_1']);
+                $protein_2 = sanitize_text_field($_POST['c1_protein_2']);
+                $carbs_1 = sanitize_text_field($_POST['c1_carbs_1']);
+                $carbs_2 = sanitize_text_field($_POST['c1_carbs_2']);
+                $fats_1 = sanitize_text_field($_POST['c1_fats_1']);
+                $fats_2 = sanitize_text_field($_POST['c1_fats_2']);
 
-        $meal_combo_id = $wpdb->get_var($wpdb->prepare(
-            "SELECT c1_id FROM {$wpdb->prefix}combos 
-             WHERE c1_protein_1 = %s 
-             AND c1_protein_2 = %s 
-             AND c1_carbs_1 = %s 
-             AND c1_carbs_2 = %s 
-             AND c1_fats_1 = %s 
-             AND c1_fats_2 = %s",
-            $protein_1, $protein_2, $carbs_1, $carbs_2, $fats_1, $fats_2
-        ));
+                $meal_combo_id = $wpdb->get_var($wpdb->prepare(
+                    "SELECT c1_id FROM {$wpdb->prefix}combos 
+                     WHERE c1_protein_1 = %s AND c1_protein_2 = %s
+                     AND c1_carbs_1 = %s AND c1_carbs_2 = %s
+                     AND c1_fats_1 = %s AND c1_fats_2 = %s",
+                    $protein_1, $protein_2, $carbs_1, $carbs_2, $fats_1, $fats_2
+                ));
 
-        if ($meal_combo_id) {
-            $wpdb->update(
-                $table_name,
-                ['meal_combo_id' => $meal_combo_id],
-                ['user_id' => $user_id, 'day_of_week' => $selected_day, 'meal_number' => $edit_meal_number],
-                ['%d'],
-                ['%d', '%s', '%d']
-            );
+                if ($meal_combo_id) {
+                    $updated = $wpdb->update(
+                        $table_name,
+                        ['meal_combo_id' => $meal_combo_id],
+                        ['user_id' => $user_id, 'day_of_week' => $selected_day, 'meal_number' => $edit_meal_number],
+                        ['%d'],
+                        ['%d', '%s', '%d']
+                    );
 
-            // Confirm update success
-            if ($wpdb->last_error) {
-                echo "<p>Error updating Meal $edit_meal_number: " . $wpdb->last_error . "</p>";
-            } else {
-                echo "<p>Meal $edit_meal_number updated successfully!</p>";
+                    if ($wpdb->last_error) {
+                        error_log("Error updating meal: " . $wpdb->last_error);
+                        echo "<p>Error updating Meal $edit_meal_number: " . $wpdb->last_error . "</p>";
+                    } elseif ($updated) {
+                        echo "<p>Meal $edit_meal_number updated successfully!</p>";
+                    } else {
+                        echo "<p>No changes were made to Meal $edit_meal_number.</p>";
+                    }
+                } else {
+                    echo "<p>No matching meal combo found for the given inputs.</p>";
+                }
+
+                // Refresh saved combos and exit edit mode
+                $saved_combos = $wpdb->get_results($wpdb->prepare(
+                    "SELECT * FROM $table_name WHERE user_id = %d AND day_of_week = %s ORDER BY meal_number",
+                    $user_id,
+                    $selected_day
+                ));
+                $edit_meal_number = null; // Exit edit mode
+
+                // Redirect to reload the page
+                wp_redirect(add_query_arg(['selected_day' => $selected_day], $_SERVER['REQUEST_URI']));
+                exit;
+            } elseif (isset($_POST['save_all_meals'])) {
+                // Save new meals for the day
+                $wpdb->delete($table_name, ['user_id' => $user_id, 'day_of_week' => $selected_day], ['%d', '%s']);
+
+                foreach ($_POST['meals'] as $meal_num => $meal) {
+                    $protein_1 = sanitize_text_field($meal['c1_protein_1']);
+                    $protein_2 = sanitize_text_field($meal['c1_protein_2']);
+                    $carbs_1 = sanitize_text_field($meal['c1_carbs_1']);
+                    $carbs_2 = sanitize_text_field($meal['c1_carbs_2']);
+                    $fats_1 = sanitize_text_field($meal['c1_fats_1']);
+                    $fats_2 = sanitize_text_field($meal['c1_fats_2']);
+
+                    $meal_combo_id = $wpdb->get_var($wpdb->prepare(
+                        "SELECT c1_id FROM {$wpdb->prefix}combos 
+                         WHERE c1_protein_1 = %s AND c1_protein_2 = %s
+                         AND c1_carbs_1 = %s AND c1_carbs_2 = %s
+                         AND c1_fats_1 = %s AND c1_fats_2 = %s",
+                        $protein_1, $protein_2, $carbs_1, $carbs_2, $fats_1, $fats_2
+                    ));
+
+                    if ($meal_combo_id) {
+                        $wpdb->insert(
+                            $table_name,
+                            [
+                                'user_id' => $user_id,
+                                'day_of_week' => $selected_day,
+                                'meal_number' => $meal_num,
+                                'meal_combo_id' => $meal_combo_id
+                            ],
+                            ['%d', '%s', '%d', '%d']
+                        );
+                    }
+                }
+
+                if ($wpdb->last_error) {
+                    error_log("Error saving meals: " . $wpdb->last_error);
+                    echo "<p>Error saving meals: " . $wpdb->last_error . "</p>";
+                } else {
+                    echo "<p>Meals for " . ucfirst($selected_day) . " saved successfully!</p>";
+                }
+
+                // Redirect to reload the page
+                wp_redirect(add_query_arg(['selected_day' => $selected_day], $_SERVER['REQUEST_URI']));
+                exit;
             }
-        } else {
-            echo "<p>No matching meal combo found for the given inputs.</p>";
         }
-
-        // Refresh saved combos and exit edit mode
-        $saved_combos = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM $table_name WHERE user_id = %d AND day_of_week = %s ORDER BY meal_number",
-            $user_id,
-            $selected_day
-        ));
-        $edit_meal_number = null; // Exit edit mode
-    }
-}
-
 
         // Render form
         ob_start();
@@ -163,18 +230,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['c1_protein_1'])) {
                     <?php endforeach; ?>
                 </tbody>
             </table>
-        <?php elseif ($edit_meal_number !== null || !$saved_combos): ?>
-            <?php
-            $meals_to_render = $saved_combos ? [$edit_meal_number] : range(1, $meal_data[$selected_day]['meals']);
-            foreach ($meals_to_render as $meal_num):
-                $meal_combo_details = $saved_combos[$meal_num - 1] ?? null;
-                ?>
-                <h4>Customize Meal <?php echo $meal_num; ?></h4>
-                <form method="post">
-                    <input type="hidden" name="selected_day" value="<?php echo esc_attr($selected_day); ?>">
-                    <input type="hidden" name="edit_meal_number" value="<?php echo $meal_num; ?>">
+        <?php elseif ($edit_meal_number !== null): ?>
+            <h4>Edit Meal <?php echo $edit_meal_number; ?></h4>
+            <form method="post">
+    <input type="hidden" name="selected_day" value="<?php echo esc_attr($selected_day); ?>">
+    <input type="hidden" name="edit_meal_number" value="<?php echo $edit_meal_number; ?>">
 
-                    <!-- Protein 1 -->
+    <?php
+    // Retrieve the current meal combo details for the meal being edited
+    $meal_combo_details = $wpdb->get_row($wpdb->prepare(
+        "SELECT * FROM {$wpdb->prefix}combos WHERE c1_id = %d",
+        $saved_combos[$edit_meal_number - 1]->meal_combo_id
+    ));
+    ?>
+
+    <!-- Protein 1 -->
     <label for="c1_protein_1">Protein 1:</label>
     <select name="c1_protein_1" required>
         <option value="">Select Protein 1</option>
@@ -261,11 +331,110 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['c1_protein_1'])) {
         <option value="-" <?php echo $meal_combo_details && $meal_combo_details->c1_fats_2 === "-" ? 'selected' : ''; ?>>-</option>
         <option value="Oil STANDARD" <?php echo $meal_combo_details && $meal_combo_details->c1_fats_2 === "Oil STANDARD" ? 'selected' : ''; ?>>Oil STANDARD</option>
     </select>
-                    </select>
-                    <br>
-                    <button type="submit">Save Meal</button>
-                </form>
-            <?php endforeach; ?>
+
+                <button type="submit">Save Meal</button>
+            </form>
+        <?php else: ?>
+           <form method="post">
+    <input type="hidden" name="selected_day" value="<?php echo esc_attr($selected_day); ?>">
+    <input type="hidden" name="save_all_meals" value="1">
+    <h4>Create Meals for <?php echo ucfirst($selected_day); ?></h4>
+
+    <?php for ($meal_num = 1; $meal_num <= $meal_data[$selected_day]['meals']; $meal_num++): ?>
+        <h5>Meal <?php echo $meal_num; ?></h5>
+
+        <!-- Protein 1 -->
+        <label for="c1_protein_1_<?php echo $meal_num; ?>">Protein 1:</label>
+        <select name="meals[<?php echo $meal_num; ?>][c1_protein_1]" required>
+            <option value="">Select Protein 1</option>
+            <option value="-">-</option>
+            <option value="Bison">Bison</option>
+            <option value="Chicken Breast">Chicken Breast</option>
+            <option value="Egg Whites">Egg Whites</option>
+            <option value="Eggs">Eggs</option>
+            <option value="Ground Beef STANDARD">Ground Beef STANDARD</option>
+            <option value="Ground Turkey STANDARD">Ground Turkey STANDARD</option>
+            <option value="Lamb">Lamb</option>
+            <option value="Pork Tenderloin">Pork Tenderloin</option>
+            <option value="Salmon">Salmon</option>
+            <option value="Steak STANDARD">Steak STANDARD</option>
+            <option value="Tilapia">Tilapia</option>
+            <option value="Tuna STANDARD">Tuna STANDARD</option>
+        </select>
+        <br>
+
+        <!-- Protein 2 -->
+        <label for="c1_protein_2_<?php echo $meal_num; ?>">Protein 2:</label>
+        <select name="meals[<?php echo $meal_num; ?>][c1_protein_2]" required>
+            <option value="">Select Protein 2</option>
+            <option value="-">-</option>
+            <option value="Chicken Breast">Chicken Breast</option>
+            <option value="Ground Turkey STANDARD">Ground Turkey STANDARD</option>
+            <option value="Ground Beef STANDARD">Ground Beef STANDARD</option>
+            <option value="Lamb">Lamb</option>
+            <option value="Steak STANDARD">Steak STANDARD</option>
+            <option value="Pork Tenderloin">Pork Tenderloin</option>
+            <option value="Salmon">Salmon</option>
+            <option value="Tilapia">Tilapia</option>
+            <option value="Tuna STANDARD">Tuna STANDARD</option>
+            <option value="Eggs">Eggs</option>
+            <option value="Egg Whites">Egg Whites</option>
+        </select>
+        <br>
+
+        <!-- Carbs 1 -->
+        <label for="c1_carbs_1_<?php echo $meal_num; ?>">Carbs 1:</label>
+        <select name="meals[<?php echo $meal_num; ?>][c1_carbs_1]" required>
+            <option value="">Select Carbs 1</option>
+            <option value="-">-</option>
+            <option value="Quinoa">Quinoa</option>
+            <option value="White Rice">White Rice</option>
+            <option value="Brown Rice">Brown Rice</option>
+            <option value="Sweet Potato">Sweet Potato</option>
+            <option value="White Potato">White Potato</option>
+            <option value="Beans STANDARD">Beans STANDARD</option>
+            <option value="Lentils">Lentils</option>
+            <option value="Whole Wheat Pasta">Whole Wheat Pasta</option>
+            <option value="Plain Pasta">Plain Pasta</option>
+            <option value="Banana">Banana</option>
+        </select>
+        <br>
+
+        <!-- Carbs 2 -->
+        <label for="c1_carbs_2_<?php echo $meal_num; ?>">Carbs 2:</label>
+        <select name="meals[<?php echo $meal_num; ?>][c1_carbs_2]" required>
+            <option value="">Select Carbs 2</option>
+            <option value="-">-</option>
+            <option value="Beans STANDARD">Beans STANDARD</option>
+            <option value="Lentils">Lentils</option>
+            <option value="Banana">Banana</option>
+            <option value="Sweet Potato">Sweet Potato</option>
+            <option value="White Potato">White Potato</option>
+        </select>
+        <br>
+
+        <!-- Fats 1 -->
+        <label for="c1_fats_1_<?php echo $meal_num; ?>">Fats 1:</label>
+        <select name="meals[<?php echo $meal_num; ?>][c1_fats_1]" required>
+            <option value="">Select Fats 1</option>
+            <option value="-">-</option>
+            <option value="Avocado">Avocado</option>
+            <option value="Nuts STANDARD">Nuts STANDARD</option>
+        </select>
+        <br>
+
+        <!-- Fats 2 -->
+        <label for="c1_fats_2_<?php echo $meal_num; ?>">Fats 2:</label>
+        <select name="meals[<?php echo $meal_num; ?>][c1_fats_2]" required>
+            <option value="">Select Fats 2</option>
+            <option value="-">-</option>
+            <option value="Oil STANDARD">Oil STANDARD</option>
+        </select>
+        <br><br>
+    <?php endfor; ?>
+
+    <button type="submit">Save All Meals</button>
+</form>
         <?php endif; ?>
 
         <?php
