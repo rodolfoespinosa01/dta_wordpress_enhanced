@@ -1,28 +1,29 @@
 <?php
 /*
-Plugin Name: Magic
-Plugin URI: https://example.com
-Description: Plugin for calculating meal macros and errors.
+Plugin Name: Magic Plugin
+Description: Automates meal plan calculations for each day of the week.
 Version: 1.0
-Author: Your Name
-Author URI: https://example.com
+Author: Rodolfo EN
 */
 
-// Prevent direct access
 if (!defined('ABSPATH')) {
     exit;
 }
 
-// Define constants
+// Define paths
 define('MAGIC_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('MAGIC_PLUGIN_URL', plugin_dir_url(__FILE__));
 
-// Include required files
-require_once MAGIC_PLUGIN_DIR . 'includes/class-Step1.php';
-require_once MAGIC_PLUGIN_DIR . 'includes/class-Step2.php'; // Add this line for Step 2
+// Include Sunday-specific functionality
+include_once MAGIC_PLUGIN_DIR . 'includes/sunday/automation.php';
 
-// Initialize classes
-add_action('plugins_loaded', function () {
-    Step1::init();
-    Step2::init(); // Initialize Step 2
+// Enqueue scripts and styles
+add_action('wp_enqueue_scripts', function () {
+    if (is_page('sunday')) { // Ensure scripts only load on the Sunday page
+        wp_enqueue_script('sunday-automation', MAGIC_PLUGIN_URL . 'includes/sunday/sunday.js', ['jquery'], null, true);
+        wp_localize_script('sunday-automation', 'magic_ajax', [
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('magic_nonce'),
+        ]);
+    }
 });

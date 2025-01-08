@@ -97,7 +97,7 @@ class Helper {
 	}
 
     public function should_plugin_split_notice_shown() {
-        $plugin_split_notice_hidden = get_transient( 'hts_plugin_split_notice_hidden' );
+        $plugin_split_notice_hidden = get_option( 'hts_plugin_split_notice_hidden', false );
 
         if ( $plugin_split_notice_hidden !== false ) {
             return false;
@@ -123,6 +123,49 @@ class Helper {
         $pluginUrl .= str_replace( ABSPATH, '', HOSTINGER_ABSPATH );
 
         return $pluginUrl;
+    }
+
+    public function get_recommended_php_version(): string {
+        $wp_version = get_bloginfo('version');
+
+        if (empty($wp_version)) {
+            return '8.2';
+        }
+
+        // Remove any additional version info (like -RC1, -beta1, etc.)
+        $wp_version = preg_replace('/[-+].*$/', '', $wp_version);
+
+        // Version specific recommendations
+        if (version_compare($wp_version, '6.6', '>=')) {
+            return '8.2';  // Latest recommended version for WP 6.6+
+        }
+
+        if (version_compare($wp_version, '6.3', '>=')) {
+            return '8.1';  // Recommended for WP 6.3-6.5
+        }
+
+        if (version_compare($wp_version, '5.3', '>=')) {
+            return '7.4';  // Recommended for WP 5.3-6.2
+        }
+
+        if (version_compare($wp_version, '5.0', '>=')) {
+            return '7.3';  // Recommended for WP 5.0-5.2
+        }
+
+        if (version_compare($wp_version, '4.9', '=')) {
+            return '7.2';  // Recommended for WP 4.9
+        }
+
+        if (version_compare($wp_version, '4.7', '>=')) {
+            return '7.1';  // Recommended for WP 4.7-4.8
+        }
+
+        if (version_compare($wp_version, '4.4', '>=')) {
+            return '7.0';  // Recommended for WP 4.4-4.6
+        }
+
+        // For versions below 4.9
+        return '5.6';
     }
 }
 
