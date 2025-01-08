@@ -1,26 +1,36 @@
 jQuery(document).ready(function ($) {
-    // Automatically run the Sunday automation on page load
-    $(document).ready(function () {
-        const statusContainer = $('#automation-status');
+    // Automatically start the automation process when the page loads
+    runSundayAutomation();
 
-        // AJAX request to trigger automation
+    function runSundayAutomation() {
+        const statusDiv = $('#automation-status');
+
+        // Clear any existing status message
+        statusDiv.text('Starting automation...');
+
+        // AJAX request to execute automation
         $.ajax({
-            url: magic_ajax.ajax_url,
+            url: magicAjax.ajax_url, // URL for AJAX call
             type: 'POST',
+            dataType: 'json',
             data: {
                 action: 'run_sunday_automation',
-                nonce: magic_ajax.nonce,
+                nonce: magicAjax.nonce
             },
             success: function (response) {
                 if (response.success) {
-                    statusContainer.text(response.data.message).addClass('success');
+                    // Update status with success message
+                    statusDiv.text(response.data.message);
                 } else {
-                    statusContainer.text(response.data.message).addClass('error');
+                    // Update status with error message
+                    statusDiv.text('Error: ' + response.data.message);
                 }
             },
-            error: function () {
-                statusContainer.text('An unexpected error occurred.').addClass('error');
+            error: function (xhr, status, error) {
+                // Handle AJAX errors
+                statusDiv.text('An unexpected error occurred: ' + error);
+                console.error('AJAX Error:', xhr, status, error);
             }
         });
-    });
+    }
 });
