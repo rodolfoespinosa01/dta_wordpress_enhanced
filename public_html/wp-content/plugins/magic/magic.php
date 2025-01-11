@@ -17,8 +17,7 @@ define('MAGIC_PLUGIN_DIR', plugin_dir_path(__FILE__));
 require_once MAGIC_PLUGIN_DIR . 'includes/sunday/automation.php';
 require_once MAGIC_PLUGIN_DIR . 'includes/sunday/class-step1.php';
 require_once MAGIC_PLUGIN_DIR . 'includes/sunday/class-step2.php';
-require_once MAGIC_PLUGIN_DIR . 'includes/sunday/class-step3.php';
-require_once MAGIC_PLUGIN_DIR . 'includes/sunday/class-step4.php';
+
 
 // Initialize the plugin
 function magic_initialize_plugin() {

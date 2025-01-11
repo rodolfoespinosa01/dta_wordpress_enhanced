@@ -97,17 +97,6 @@ class SundayAutomation {
                 wp_send_json_error(['message' => 'Step 2 failed: ' . $step2_result['message']]);
             }
 
-            // Run Step 3
-            $step3_result = Step3::run('sunday');
-            if (!$step3_result['success']) {
-                wp_send_json_error(['message' => 'Step 3 failed: ' . $step3_result['message']]);
-            }
-
-            // Run Step 4
-            $step4_result = Step4::run('sunday');
-            if (!$step4_result['success']) {
-                wp_send_json_error(['message' => 'Step 4 failed: ' . $step4_result['message']]);
-            }
 
             // Final success message
             wp_send_json_success(['message' => 'Sunday meal plan created successfully!']);
