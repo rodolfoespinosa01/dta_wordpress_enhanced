@@ -61,12 +61,19 @@ class SundayAutomation {
                 ];
             }
 
-            // Add future steps here...
+            // Execute Step 3
+            $step3_result = Step3::run('sunday');
+            if (!$step3_result['success']) {
+                return [
+                    'success' => false,
+                    'message' => 'Step 3 failed: ' . $step3_result['message'],
+                ];
+            }
 
             // Final success message
             return [
                 'success' => true,
-                'message' => 'Sunday Automation Completed Successfully: Step 1 and Step 2 finished.',
+                'message' => 'Sunday Automation completed successfully. All steps processed for all meals.',
             ];
 
         } catch (Exception $e) {
@@ -74,7 +81,7 @@ class SundayAutomation {
             error_log('Automation Error: ' . $e->getMessage());
             return [
                 'success' => false,
-                'message' => 'An error occurred: ' . $e->getMessage(),
+                'message' => 'An error occurred during automation: ' . $e->getMessage(),
             ];
         }
     }

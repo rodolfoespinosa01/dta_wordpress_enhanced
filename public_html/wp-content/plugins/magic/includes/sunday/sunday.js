@@ -33,4 +33,9 @@ jQuery(document).ready(function ($) {
             }
         });
     }
+
+    // Optionally, add a retry button if the process fails
+    $('#retry-automation').on('click', function () {
+        runSundayAutomation();
+    });
 });
