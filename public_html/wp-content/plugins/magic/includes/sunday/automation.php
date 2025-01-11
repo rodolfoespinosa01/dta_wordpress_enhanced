@@ -70,6 +70,15 @@ class SundayAutomation {
                 ];
             }
 
+            // Execute Step 4
+            $step4_result = Step4::run('sunday');
+            if (!$step4_result['success']) {
+                return [
+                    'success' => false,
+                    'message' => 'Step 4 failed: ' . $step4_result['message'],
+                ];
+            }
+
             // Final success message
             return [
                 'success' => true,
