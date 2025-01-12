@@ -18,6 +18,10 @@ require_once MAGIC_PLUGIN_DIR . 'includes/sunday/class-step1.php';
 require_once MAGIC_PLUGIN_DIR . 'includes/sunday/class-step2.php';
 require_once MAGIC_PLUGIN_DIR . 'includes/sunday/class-step3.php';
 require_once MAGIC_PLUGIN_DIR . 'includes/sunday/class-step4.php';
+require_once MAGIC_PLUGIN_DIR . 'includes/sunday/class-step5.php';
+
+
+
 
 // Initialize the plugin
 function magic_initialize_plugin() {
@@ -26,6 +30,7 @@ function magic_initialize_plugin() {
     Step2::init();
     Step3::init();
     Step4::init();
+    Step5::init();
    
 }
 add_action('plugins_loaded', 'magic_initialize_plugin');
