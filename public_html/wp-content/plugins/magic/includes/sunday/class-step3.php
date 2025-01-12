@@ -6,9 +6,32 @@ if (!defined('ABSPATH')) {
 class Step3 {
 
     public static function init() {
-        // Step 3 does not require a shortcode, as it will be triggered programmatically after Step 2
+        // Register the shortcode for Step 3
+        add_shortcode('run_step3', [__CLASS__, 'run_step3_shortcode']);
     }
 
+    // Shortcode callback
+    public static function run_step3_shortcode() {
+        ob_start();
+
+        // Execute the Step 3 logic
+        $result = self::run('sunday'); // Hardcoding 'sunday' for now
+
+        // Display the result
+        if ($result['success']) {
+            echo '<div class="step3-success">';
+            echo '<p>' . esc_html($result['message']) . '</p>';
+            echo '</div>';
+        } else {
+            echo '<div class="step3-error">';
+            echo '<p>' . esc_html($result['message']) . '</p>';
+            echo '</div>';
+        }
+
+        return ob_get_clean();
+    }
+
+    // Main Step 3 logic
     public static function run($day) {
         global $wpdb;
 
@@ -69,63 +92,63 @@ class Step3 {
             );
         ");
 
-        // Process each meal
+        // Insert data into Step 3 table
         for ($meal_num = 1; $meal_num <= $day_meals; $meal_num++) {
-            // Fetch the meal combo ID
-            $meal_combo_id = $wpdb->get_var($wpdb->prepare("
-                SELECT meal_combo_id 
-                FROM {$wpdb->prefix}meal_combos 
-                WHERE user_id = %d AND day_of_week = %s AND meal_number = %d",
-                $user_id, $day, $meal_num
-            ));
-            if (!$meal_combo_id) {
-                error_log("No meal_combo_id found for user $user_id, day $day, meal $meal_num");
-                continue;
-            }
+            $wpdb->query($wpdb->prepare("
+                INSERT INTO $step_3_table (meal_number, error_id, meal_combo_id, protein1_total, protein2_total, carbs1_total, carbs2_total, fats1_total, fats2_total)
+                SELECT 
+                    s2.meal_number,
+                    s2.error_id,
+                    s2.meal_combo_id,
+                    IFNULL((s2.pro1_n / NULLIF((
+                        SELECT fm.protein
+                        FROM {$wpdb->prefix}food_macros fm
+                        JOIN {$wpdb->prefix}combos c ON c.c1_protein_1 = fm.name
+                        WHERE c.c1_id = s2.meal_combo_id
+                    ), 0)), 0) AS protein1_total,
+                    
+                    IFNULL((s2.pro2_n / NULLIF((
+                        SELECT fm.protein
+                        FROM {$wpdb->prefix}food_macros fm
+                        JOIN {$wpdb->prefix}combos c ON c.c1_protein_2 = fm.name
+                        WHERE c.c1_id = s2.meal_combo_id
+                    ), 0)), 0) AS protein2_total,
 
-            // Fetch combo data
-            $combo_data = $wpdb->get_row($wpdb->prepare("
-                SELECT p1, p2, c1, c2, f1, f2 
-                FROM {$wpdb->prefix}combos 
-                WHERE c1_id = %d",
-                $meal_combo_id
-            ));
-            if (!$combo_data) {
-                error_log("No combo data found for meal_combo_id $meal_combo_id");
-                continue;
-            }
+                    IFNULL((s2.carbs1_n / NULLIF((
+                        SELECT fm.carbs
+                        FROM {$wpdb->prefix}food_macros fm
+                        JOIN {$wpdb->prefix}combos c ON c.c1_carbs_1 = fm.name
+                        WHERE c.c1_id = s2.meal_combo_id
+                    ), 0)), 0) AS carbs1_total,
 
-            // Insert data into Step 3 table
-$wpdb->query($wpdb->prepare("
-    INSERT INTO $step_3_table (meal_number, error_id, meal_combo_id, protein1_total, protein2_total, carbs1_total, carbs2_total, fats1_total, fats2_total)
-    SELECT 
-        meal_number,
-        error_id,
-        %d AS meal_combo_id,
-        GREATEST(0, pro1_n * %f) AS protein1_total,
-        GREATEST(0, pro2_n * %f) AS protein2_total,
-        GREATEST(0, carbs1_n * %f) AS carbs1_total,
-        GREATEST(0, carbs2_n * %f) AS carbs2_total,
-        GREATEST(0, fats1_n * %f) AS fats1_total,
-        GREATEST(0, fats2_n * %f) AS fats2_total
-    FROM $step_2_table
-    WHERE meal_number = %d
-    ON DUPLICATE KEY UPDATE
-        protein1_total = VALUES(protein1_total),
-        protein2_total = VALUES(protein2_total),
-        carbs1_total = VALUES(carbs1_total),
-        carbs2_total = VALUES(carbs2_total),
-        fats1_total = VALUES(fats1_total),
-        fats2_total = VALUES(fats2_total)",
-    $meal_combo_id,
-    $combo_data->p1, $combo_data->p2,
-    $combo_data->c1, $combo_data->c2,
-    $combo_data->f1, $combo_data->f2,
-    $meal_num
-));
+                    IFNULL((s2.carbs2_n / NULLIF((
+                        SELECT fm.carbs
+                        FROM {$wpdb->prefix}food_macros fm
+                        JOIN {$wpdb->prefix}combos c ON c.c1_carbs_2 = fm.name
+                        WHERE c.c1_id = s2.meal_combo_id
+                    ), 0)), 0) AS carbs2_total,
 
+                    IFNULL((s2.fats1_n / NULLIF((
+                        SELECT fm.fats
+                        FROM {$wpdb->prefix}food_macros fm
+                        JOIN {$wpdb->prefix}combos c ON c.c1_fats_1 = fm.name
+                        WHERE c.c1_id = s2.meal_combo_id
+                    ), 0)), 0) AS fats1_total,
+
+                    IFNULL((s2.fats2_n / NULLIF((
+                        SELECT fm.fats
+                        FROM {$wpdb->prefix}food_macros fm
+                        JOIN {$wpdb->prefix}combos c ON c.c1_fats_2 = fm.name
+                        WHERE c.c1_id = s2.meal_combo_id
+                    ), 0)), 0) AS fats2_total
+                FROM $step_2_table s2
+                WHERE s2.meal_number = %d
+            ", $meal_num));
         }
 
         return ['success' => true, 'message' => "Step 3 completed successfully for $day!"];
     }
 }
+
+// Initialize the Step 3 class
+Step3::init();

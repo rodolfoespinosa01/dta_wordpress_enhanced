@@ -6,9 +6,32 @@ if (!defined('ABSPATH')) {
 class Step1 {
 
     public static function init() {
-        // No shortcode needed; Step 1 is executed via automation
+        // Register the shortcode for Step 1
+        add_shortcode('run_step1', [__CLASS__, 'run_step1_shortcode']);
     }
 
+    // Shortcode callback
+    public static function run_step1_shortcode() {
+        ob_start();
+        
+        // Perform Step 1 calculations
+        $result = self::run('sunday'); // Hardcoding 'sunday' for now
+
+        // Display the result
+        if ($result['success']) {
+            echo '<div class="step1-success">';
+            echo '<p>' . esc_html($result['message']) . '</p>';
+            echo '</div>';
+        } else {
+            echo '<div class="step1-error">';
+            echo '<p>' . esc_html($result['message']) . '</p>';
+            echo '</div>';
+        }
+
+        return ob_get_clean();
+    }
+
+    // Main Step 1 logic
     public static function run($day) {
         global $wpdb;
 
@@ -39,8 +62,8 @@ class Step1 {
         }
 
         // Decode JSON fields
-        $meal_data = isset($user->meal_data) && !empty($user->meal_data) ? json_decode($user->meal_data, true) : [];
-        $carbCycling_data = isset($user->carbCycling_data) && !empty($user->carbCycling_data) ? json_decode($user->carbCycling_data, true) : [];
+        $meal_data = isset($user->meal_data) ? json_decode($user->meal_data, true) : [];
+        $carbCycling_data = isset($user->carbCycling_data) ? json_decode($user->carbCycling_data, true) : [];
         $meal_plan_type = $user->meal_plan_type;
 
         // Validate meal data for Sunday
@@ -151,3 +174,6 @@ class Step1 {
         return ['success' => true, 'message' => 'Step 1 completed successfully for Sunday.'];
     }
 }
+
+// Initialize the Step 1 class
+Step1::init();

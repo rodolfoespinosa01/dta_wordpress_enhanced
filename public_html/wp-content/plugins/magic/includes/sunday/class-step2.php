@@ -6,13 +6,36 @@ if (!defined('ABSPATH')) {
 class Step2 {
 
     public static function init() {
-        // Step 2 does not need a shortcode; it is triggered after Step 1.
+        // Register the shortcode for Step 2
+        add_shortcode('run_step2', [__CLASS__, 'run_step2_shortcode']);
     }
 
+    // Shortcode callback
+    public static function run_step2_shortcode() {
+        ob_start();
+
+        // Perform Step 2 calculations
+        $result = self::run('sunday'); // Hardcoding 'sunday' for now
+
+        // Display the result
+        if ($result['success']) {
+            echo '<div class="step2-success">';
+            echo '<p>' . esc_html($result['message']) . '</p>';
+            echo '</div>';
+        } else {
+            echo '<div class="step2-error">';
+            echo '<p>' . esc_html($result['message']) . '</p>';
+            echo '</div>';
+        }
+
+        return ob_get_clean();
+    }
+
+    // Main Step 2 logic
     public static function run($day) {
         global $wpdb;
 
-        // Ensure this runs only for Sunday
+        // Ensure this runs only for the specified day
         if ($day !== 'sunday') {
             return ['success' => false, 'message' => 'Step 2 is configured to run only for Sunday.'];
         }
@@ -23,33 +46,9 @@ class Step2 {
             return ['success' => false, 'message' => 'You must be logged in to run this step.'];
         }
 
-        // Fetch the associated admin for the user
-        $admin_id = UserDashboardUtils::get_associated_admin($user_id);
-        if (!$admin_id) {
-            return ['success' => false, 'message' => 'No associated admin found for this user.'];
-        }
-
-        // Fetch user-specific meal data
-        $user_info = $wpdb->get_row($wpdb->prepare(
-            "SELECT meal_data FROM {$wpdb->prefix}user_info WHERE user_id = %d",
-            $user_id
-        ));
-
-        if (!$user_info || empty($user_info->meal_data)) {
-            return ['success' => false, 'message' => 'No meal data found for this user.'];
-        }
-
-        // Decode the meal data
-        $meal_data = json_decode($user_info->meal_data, true);
-        if (json_last_error() !== JSON_ERROR_NONE || !isset($meal_data['sunday'])) {
-            return ['success' => false, 'message' => 'Invalid or missing meal data for Sunday.'];
-        }
-
-        $day_meals = $meal_data['sunday']['meals'];
-
         // Step 1 and Step 2 table names
-        $step_1_table = "{$wpdb->prefix}{$user_id}_step1_sunday";
-        $step_2_table = "{$wpdb->prefix}{$user_id}_step2_sunday";
+        $step_1_table = "{$wpdb->prefix}{$user_id}_step1_{$day}";
+        $step_2_table = "{$wpdb->prefix}{$user_id}_step2_{$day}";
 
         // Check if Step 1 table exists
         if ($wpdb->get_var("SHOW TABLES LIKE '$step_1_table'") !== $step_1_table) {
@@ -72,6 +71,24 @@ class Step2 {
                 PRIMARY KEY (meal_number, error_id)
             );
         ");
+
+        // Fetch user-specific meal data
+        $user_info = $wpdb->get_row($wpdb->prepare(
+            "SELECT meal_data FROM {$wpdb->prefix}user_info WHERE user_id = %d",
+            $user_id
+        ));
+
+        if (!$user_info || empty($user_info->meal_data)) {
+            return ['success' => false, 'message' => 'No meal data found for this user.'];
+        }
+
+        // Decode the meal data
+        $meal_data = json_decode($user_info->meal_data, true);
+        if (json_last_error() !== JSON_ERROR_NONE || !isset($meal_data['sunday'])) {
+            return ['success' => false, 'message' => 'Invalid or missing meal data for Sunday.'];
+        }
+
+        $day_meals = $meal_data['sunday']['meals'];
 
         // Process each meal for Sunday
         for ($meal_num = 1; $meal_num <= $day_meals; $meal_num++) {
@@ -131,3 +148,6 @@ class Step2 {
         return ['success' => true, 'message' => 'Step 2 completed successfully for Sunday.'];
     }
 }
+
+// Initialize the Step 2 class
+Step2::init();
