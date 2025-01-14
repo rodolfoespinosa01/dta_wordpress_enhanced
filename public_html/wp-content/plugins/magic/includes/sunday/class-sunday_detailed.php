@@ -29,8 +29,6 @@ class SundayDetailedMealPlan {
             return "<p>You must be logged in to view this page.</p>";
         }
 
-        error_log("Rendering detailed meal plan for $day for user $user_id");
-
         // Fetch meal data
         $meal_data = $wpdb->get_var($wpdb->prepare(
             "SELECT meal_data FROM {$wpdb->prefix}user_info WHERE user_id = %d",
@@ -45,9 +43,6 @@ class SundayDetailedMealPlan {
         if (!isset($meal_data[$day])) {
             return "<p>No meal information available for $day.</p>";
         }
-
-        // Get training time and workout day details
-        $is_workout_day = ($meal_data[$day]['training_time'] ?? 'none') !== 'none';
 
         // Fetch meal combos for the specific user and day from the global `wp_meal_combos` table
         $meal_combos_table = "{$wpdb->prefix}meal_combos";
@@ -69,7 +64,15 @@ class SundayDetailedMealPlan {
         ob_start(); // Start output buffering
         ?>
         <h2><?php echo ucfirst($day); ?>'s Detailed Meal Plan</h2>
-        <table border="1" style="width:100%; border-collapse:collapse;">
+        
+        <!-- Toggle Button for Units -->
+        <div style="text-align: center; margin: 20px 0;">
+            <label for="unit-toggle" style="font-size: 16px; margin-right: 10px;">Show in:</label>
+            <input type="checkbox" id="unit-toggle" style="transform: scale(1.5);" />
+            <span id="unit-label" style="font-size: 16px; margin-left: 10px;">Ounces</span>
+        </div>
+
+        <table border="1" style="width:100%; border-collapse:collapse;" id="detailed-meal-plan-table">
             <thead>
                 <tr>
                     <th>Meal Number</th>
@@ -112,19 +115,31 @@ class SundayDetailedMealPlan {
                         <td><?php echo esc_html($meal_data[$day]['training_time'] ?? 'None'); ?></td>
                         <!-- Protein -->
                         <td><?php echo esc_html($detailed_meal_data->c1_protein_1); ?></td>
-                        <td><?php echo number_format($detailed_meal_data->protein1_total, 2); ?></td>
+                        <td class="toggle-unit" data-oz="<?php echo esc_attr($detailed_meal_data->protein1_total); ?>">
+                            <?php echo number_format($detailed_meal_data->protein1_total, 2); ?> oz
+                        </td>
                         <td><?php echo esc_html($detailed_meal_data->c1_protein_2); ?></td>
-                        <td><?php echo number_format($detailed_meal_data->protein2_total, 2); ?></td>
+                        <td class="toggle-unit" data-oz="<?php echo esc_attr($detailed_meal_data->protein2_total); ?>">
+                            <?php echo number_format($detailed_meal_data->protein2_total, 2); ?> oz
+                        </td>
                         <!-- Carbs -->
                         <td><?php echo esc_html($detailed_meal_data->c1_carbs_1); ?></td>
-                        <td><?php echo number_format($detailed_meal_data->carbs1_total, 2); ?></td>
+                        <td class="toggle-unit" data-oz="<?php echo esc_attr($detailed_meal_data->carbs1_total); ?>">
+                            <?php echo number_format($detailed_meal_data->carbs1_total, 2); ?> oz
+                        </td>
                         <td><?php echo esc_html($detailed_meal_data->c1_carbs_2); ?></td>
-                        <td><?php echo number_format($detailed_meal_data->carbs2_total, 2); ?></td>
+                        <td class="toggle-unit" data-oz="<?php echo esc_attr($detailed_meal_data->carbs2_total); ?>">
+                            <?php echo number_format($detailed_meal_data->carbs2_total, 2); ?> oz
+                        </td>
                         <!-- Fats -->
                         <td><?php echo esc_html($detailed_meal_data->c1_fats_1); ?></td>
-                        <td><?php echo number_format($detailed_meal_data->fats1_total, 2); ?></td>
+                        <td class="toggle-unit" data-oz="<?php echo esc_attr($detailed_meal_data->fats1_total); ?>">
+                            <?php echo number_format($detailed_meal_data->fats1_total, 2); ?> oz
+                        </td>
                         <td><?php echo esc_html($detailed_meal_data->c1_fats_2); ?></td>
-                        <td><?php echo number_format($detailed_meal_data->fats2_total, 2); ?></td>
+                        <td class="toggle-unit" data-oz="<?php echo esc_attr($detailed_meal_data->fats2_total); ?>">
+                            <?php echo number_format($detailed_meal_data->fats2_total, 2); ?> oz
+                        </td>
                     </tr>
                     <?php
                 } else {
@@ -138,8 +153,35 @@ class SundayDetailedMealPlan {
             ?>
             </tbody>
         </table>
+
+        <!-- JavaScript for Toggle -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const toggleSwitch = document.getElementById('unit-toggle');
+                const unitLabel = document.getElementById('unit-label');
+                const elements = document.querySelectorAll('.toggle-unit');
+
+                toggleSwitch.addEventListener('change', function () {
+                    const toGrams = toggleSwitch.checked;
+                    unitLabel.textContent = toGrams ? "Grams" : "Ounces";
+
+                    elements.forEach(function (el) {
+                        const ozValue = parseFloat(el.getAttribute('data-oz'));
+                        if (!isNaN(ozValue)) {
+                            if (toGrams) {
+                                // Convert to grams
+                                el.textContent = (ozValue * 28.3495).toFixed(2) + " g";
+                            } else {
+                                // Display in ounces
+                                el.textContent = ozValue.toFixed(2) + " oz";
+                            }
+                        }
+                    });
+                });
+            });
+        </script>
         <?php
-        return ob_get_clean(); // Return the buffered output content
+        return ob_get_clean();
     }
 }
 
