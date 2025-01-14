@@ -10,12 +10,22 @@ class Step5 {
     }
 
     public static function run_step5_shortcode() {
+        $result = self::run('sunday'); // Hardcoding 'sunday' for now
+        return $result['message']; // Return the message for shortcode output
+    }
+
+    public static function run($day) {
         global $wpdb;
+
+        // Validate the day
+        if ($day !== 'sunday') {
+            return ['success' => false, 'message' => 'Step 5 is configured to run only for Sunday.'];
+        }
 
         // Get the current logged-in user ID
         $user_id = get_current_user_id();
         if (!$user_id) {
-            return "You must be logged in to run Step 5.";
+            return ['success' => false, 'message' => 'You must be logged in to run Step 5.'];
         }
 
         error_log("Processing Step 5 for user $user_id");
@@ -26,16 +36,15 @@ class Step5 {
         ));
 
         if (!$meal_data) {
-            return "No meal data found for this user.";
+            return ['success' => false, 'message' => 'No meal data found for this user.'];
         }
 
         // Decode the meal data to get the number of meals for Sunday
         $meal_data = json_decode($meal_data, true);
-        $day = 'sunday'; // You can make this dynamic if needed
         $total_meals = $meal_data[$day]['meals'] ?? 0;
 
         if ($total_meals < 1) {
-            return "No meals found for this user.";
+            return ['success' => false, 'message' => "No meals found for $day."];
         }
 
         // Create the Step 5 table for all meals
@@ -60,7 +69,7 @@ class Step5 {
             $step_4_table = "{$wpdb->prefix}{$user_id}_step4_meal{$meal_number}_{$day}";
 
             // Check if the Step 4 table exists
-            if ($wpdb->get_var("SHOW TABLES LIKE '$step_4_table'") !== $step_4_table) {
+            if ($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $step_4_table)) !== $step_4_table) {
                 error_log("Step 4 table $step_4_table does not exist for meal $meal_number.");
                 continue;
             }
@@ -90,7 +99,7 @@ class Step5 {
             error_log("Processed Step 5 for meal $meal_number for user $user_id");
         }
 
-        return "Step 5 for all meals has been completed successfully.";
+        return ['success' => true, 'message' => "Step 5 for $day has been completed successfully."];
     }
 }
 
