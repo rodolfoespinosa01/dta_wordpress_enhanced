@@ -26,6 +26,7 @@ require_once MAGIC_PLUGIN_DIR . 'includes/sunday/class-step8.php';
 require_once MAGIC_PLUGIN_DIR . 'includes/sunday/class-step9.php';
 require_once MAGIC_PLUGIN_DIR . 'includes/sunday/class-step10.php';
 require_once MAGIC_PLUGIN_DIR . 'includes/sunday/class-sunday_detailed.php';
+require_once MAGIC_PLUGIN_DIR . 'includes/sunday/class-sundayImages.php';
 
 // Include the automation handler
 require_once MAGIC_PLUGIN_DIR . 'includes/sunday/automation_sunday.php';
