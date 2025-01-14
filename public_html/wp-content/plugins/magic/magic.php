@@ -20,6 +20,7 @@ require_once MAGIC_PLUGIN_DIR . 'includes/sunday/class-step3.php';
 require_once MAGIC_PLUGIN_DIR . 'includes/sunday/class-step4.php';
 require_once MAGIC_PLUGIN_DIR . 'includes/sunday/class-step5.php';
 require_once MAGIC_PLUGIN_DIR . 'includes/sunday/class-step6.php';
+require_once MAGIC_PLUGIN_DIR . 'includes/sunday/class-step7.php';
 
 
 
@@ -34,6 +35,7 @@ function magic_initialize_plugin() {
     Step4::init();
     Step5::init();
     Step6::init();
+    Step7::init();
 
    
 }
